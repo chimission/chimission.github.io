@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Chimission</title>
+    <title>Posts on Chimission&#39;s Notes</title>
     <link>https://notes.chimission.cn/posts/</link>
-    <description>Recent content in Posts on Chimission</description>
+    <description>Recent content in Posts on Chimission&#39;s Notes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 27 Jun 2022 14:13:46 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/posts/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
+    <lastBuildDate>Mon, 27 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://notes.chimission.cn/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>My First Post</title>
-      <link>https://notes.chimission.cn/posts/my-first-post/</link>
-      <pubDate>Mon, 27 Jun 2022 14:13:46 +0800</pubDate>
+      <title>GO字符串拼接性能分析</title>
+      <link>https://notes.chimission.cn/posts/2022/06/go_string_test/</link>
+      <pubDate>Mon, 27 Jun 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://notes.chimission.cn/posts/my-first-post/</guid>
-      <description>这是chimission的第一条中文信息</description>
+      <guid>https://notes.chimission.cn/posts/2022/06/go_string_test/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;本文将对GO常见的几种字符串拼接方法做基准测试，并总结它们各自的使用场景&lt;/p&gt;
+&lt;/blockquote&gt;</description>
     </item>
     
   </channel>

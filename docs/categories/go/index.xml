@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Chimission&#39;s Notes</title>
-    <link>https://notes.chimission.cn/</link>
-    <description>Recent content on Chimission&#39;s Notes</description>
+    <title>go on Chimission&#39;s Notes</title>
+    <link>https://notes.chimission.cn/categories/go/</link>
+    <description>Recent content in go on Chimission&#39;s Notes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
-    <lastBuildDate>Mon, 27 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://notes.chimission.cn/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>About</title>
-      <link>https://notes.chimission.cn/about/</link>
-      <pubDate>Mon, 27 Jun 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://notes.chimission.cn/about/</guid>
-      <description>Hi, my name&amp;rsquo;s Chimission
-Here are Chimission&amp;rsquo;s notes</description>
-    </item>
-    
+    <lastBuildDate>Mon, 27 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://notes.chimission.cn/categories/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GO字符串拼接性能分析</title>
       <link>https://notes.chimission.cn/posts/2022/06/go_string_test/</link>

@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on Chimission</title>
+    <title>Tags on Chimission&#39;s Notes</title>
     <link>https://notes.chimission.cn/tags/</link>
-    <description>Recent content in Tags on Chimission</description>
+    <description>Recent content in Tags on Chimission&#39;s Notes</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://notes.chimission.cn/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
+    <lastBuildDate>Mon, 27 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://notes.chimission.cn/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>go</title>
+      <link>https://notes.chimission.cn/tags/go/</link>
+      <pubDate>Mon, 27 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://notes.chimission.cn/tags/go/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>performance</title>
+      <link>https://notes.chimission.cn/tags/performance/</link>
+      <pubDate>Mon, 27 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://notes.chimission.cn/tags/performance/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

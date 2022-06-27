@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>wirte on Chimission&#39;s Notes</title>
+    <link>https://notes.chimission.cn/categories/wirte/</link>
+    <description>Recent content in wirte on Chimission&#39;s Notes</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
+    <lastBuildDate>Mon, 27 Jun 2022 23:09:19 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/categories/wirte/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>借助github pages快速搭建blog</title>
+      <link>https://notes.chimission.cn/posts/create_blog_with_github_pages/</link>
+      <pubDate>Mon, 27 Jun 2022 23:09:19 +0800</pubDate>
+      
+      <guid>https://notes.chimission.cn/posts/create_blog_with_github_pages/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;作者的blog也托管在了github pages上    :-)&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

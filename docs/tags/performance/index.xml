@@ -9,13 +9,13 @@
     <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
     <lastBuildDate>Mon, 27 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://notes.chimission.cn/tags/performance/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>GO字符串拼接性能分析</title>
+      <title>GO字符串拼接函数性能分析</title>
       <link>https://notes.chimission.cn/posts/2022/06/go_string_test/</link>
       <pubDate>Mon, 27 Jun 2022 00:00:00 +0000</pubDate>
       
       <guid>https://notes.chimission.cn/posts/2022/06/go_string_test/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;本文将对GO常见的几种字符串拼接方法做基准测试，并总结它们各自的使用场景&lt;/p&gt;
+&lt;p&gt;本文将对GO常见的几种字符串拼接方法进行基准测试，并总结它们各自的使用场景&lt;/p&gt;
 &lt;/blockquote&gt;</description>
     </item>
     

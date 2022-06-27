@@ -9,16 +9,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>GO字符串拼接性能分析 - Chimission&#39;s Notes</title>
+<title>GO字符串拼接函数性能分析 - Chimission&#39;s Notes</title>
 <meta name="description" content="基准测试">
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=36099bd439da108a23ca92104141f0c48d10ab8e">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=36099bd439da108a23ca92104141f0c48d10ab8e">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=36099bd439da108a23ca92104141f0c48d10ab8e">
-<link rel="alternate" href="/index.xml?c=36099bd439da108a23ca92104141f0c48d10ab8e" type="application/rss+xml" title="RSS" />
-<meta property="og:title" content="GO字符串拼接性能分析 - Chimission&#39;s Notes">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2">
+<link rel="alternate" href="/index.xml?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2" type="application/rss+xml" title="RSS" />
+<meta property="og:title" content="GO字符串拼接函数性能分析 - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/2022/06/go_string_test/">
 <meta property="og:type" content="article">
@@ -30,15 +30,15 @@
 <meta name="twitter:card" content="summary_large_image" /></meta>
 <meta name="twitter:site" content="@"></meta>
 <meta name="twitter:creator" content="@"></meta>
-<meta name="twitter:title" content="GO字符串拼接性能分析 - Chimission&#39;s Notes"></meta>
+<meta name="twitter:title" content="GO字符串拼接函数性能分析 - Chimission&#39;s Notes"></meta>
 <meta name="twitter:url" content="https://notes.chimission.cn/posts/2022/06/go_string_test/"></meta>
 <meta name="twitter:description" content="基准测试"></meta>
 
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=36099bd439da108a23ca92104141f0c48d10ab8e">
-<link rel="stylesheet" href="/css/color.css?c=36099bd439da108a23ca92104141f0c48d10ab8e">
+<link rel="stylesheet" href="/css/main.css?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2">
+<link rel="stylesheet" href="/css/color.css?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2">
 
 
 
@@ -75,7 +75,7 @@
 
 
 
-<h2>GO字符串拼接性能分析</h2>
+<h2>GO字符串拼接函数性能分析</h2>
 
 <span class="sub">2022-06-27</span>
 
@@ -87,32 +87,34 @@
 
 
 <blockquote>
-<p>本文将对GO常见的几种字符串拼接方法做基准测试，并总结它们各自的使用场景</p>
+<p>本文将对GO常见的几种字符串拼接方法进行基准测试，并总结它们各自的使用场景</p>
 </blockquote>
-<p>如果你想在GO中拼接多个字符串成一个，GO提供本身和标准库了多种实现方式，下面几种比较常用的方式</p>
+<p>如果你想在GO中拼接多个字符串成一个，GO内建方法和标准库提供了多种方法，下面几种比较常用</p>
 <ol>
 <li><code>+</code> 运算符</li>
 <li>string.Join</li>
 <li>bytes.Buffer</li>
 <li>bytes.Builder</li>
 </ol>
-<p>可以看到有很多种方式可以实现字符串拼接，比较灵活，但是多种选择也会对使用者造成一定程度的困扰，不清楚哪种方式才是最符合自己的使用场景，所以本篇文章将探讨以上常用的四种字符串拼接的性能，找出它们适用的场景。</p>
+<p>可以看到有至少有4种官方提供的方式来实现字符串拼接，非常灵活，但是多种选择也会对使用者造成一定程度的困扰，不清楚哪种方式才是最符合自己的使用场景，所以本篇文章将深入以上常用的四种字符串拼接的性能，对其进行基准测试，找出它们适用的场景。</p>
 <h2 id="如何测试性能">如何测试性能</h2>
 <p>既然我们要比较这几种拼接方式，那么我们该怎么测试它们的性能呢？</p>
-<p>这里我们使用 go 语言自带的 <code>Benchmark【基准测试】</code></p>
+<p>这里我们使用 go 语言自带的命令行工具 <code>Benchmark【基准测试】</code></p>
 <p>Benchmark 可以统计出函数的执行时间和内存分配等信息，并且提供了丰富的命令行参数用来定制测试需求。</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">BenchmarkTestFunc</span>(b <span style="color:#555">*</span>testing.B) {
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; b.N; i<span style="color:#555">++</span> {
 </span></span><span style="display:flex;"><span>		<span style="color:#c0f">TestFunc</span>()	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>拿上边这个例子说明，go会在一定时间内循环调用 TestFunc 并统计调用的资源使用，最后输出</p>
+</span></span></code></pre></div><p>拿上边这个例子说明，当我们执行命令</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">go</span> test <span style="color:#555">-</span>bench=. <span style="color:#555">-</span>benchmem  <span style="color:#a00;background-color:#faa">#</span><span style="color:#555">-</span>bench代表执行基准测试<span style="color:#a00;background-color:#faa">，</span>默认单元测试  <span style="color:#555">-</span>benchmem表示记录内存分配
+</span></span></code></pre></div><p>测试函数会在一定时间内循环调用 TestFunc 并统计调用的资源使用，最后输出如下</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>BenchmarkTestFunc     <span style="color:#f60">9180396</span>     <span style="color:#f60">218.8</span> ns<span style="color:#555">/</span>op    <span style="color:#f60">56</span> B<span style="color:#555">/</span>op   <span style="color:#f60">3</span> allocs<span style="color:#555">/</span>op
-</span></span></code></pre></div><p>第1列是函数名</p>
-<p>第2例表明这次测试一共调用了多少次TestFunc</p>
-<p>第3列表明调用一次平均花费时间</p>
-<p>第4列表明调用一次平均内存占用</p>
-<p>第5列表明调用一次平均内存分配次数</p>
-<p>我们这里只是使用Benchmark 用于性能测试，暂且不讨论Benchmark的使用细节，感兴趣的同学可以看这里</p>
+</span></span></code></pre></div><p>第1列是函数名<br>
+第2例表明这次测试一共调用了多少次TestFunc<br>
+第3列表明调用一次平均花费时间<br>
+第4列表明调用一次平均内存占用<br>
+第5列表明调用一次平均内存分配次数<br>
+我们这里只是使用Benchmark 用于性能测试，暂且不讨论Benchmark的内部细节，感兴趣的同学在Google上搜索一下</p>
 <h2 id="开始测试">开始测试</h2>
 <p><a href="https://github.com/chimission/gostringbenchmark">完整项目代码</a></p>
 <h3 id="-运算">+ 运算</h3>
@@ -120,7 +122,7 @@
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">return</span> <span style="color:#c30">&#34;GO&#34;</span> <span style="color:#555">+</span> <span style="color:#c30">&#34;字符串&#34;</span> <span style="color:#555">+</span> <span style="color:#c30">&#34;链接&#34;</span> <span style="color:#555">+</span> <span style="color:#c30">&#34;速度&#34;</span> <span style="color:#555">+</span> <span style="color:#c30">&#34;测试&#34;</span> <span style="color:#555">+</span> <span style="color:#c30">&#34;!&#34;</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>首先是 最简单的<code>+</code> 运算符，几乎所有的语言都实现了使用 <code>+</code> 运算。</p>
-<p>按照经验，一般来说 + 运算拼接字符串的效率是最低的，因为字符串是不可变数据结构，每次+都会内存分配生成新的字符串，比如上边的函数进行了5次+，会有5次内存分配。</p>
+<p>按照一般经验，通常来说 <code>+</code> 运算拼接字符串的效率是最低的（无论在哪种语言里），因为字符串是不可变数据结构，每次+都会内存分配生成新的字符串，比如上边的函数进行了5次+，会有5次内存分配。</p>
 <p>但是真的所有的语言都遵行这个规则吗， 每次+运算都会内存分配吗？让我们来看下基准测试</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">BenchmarkStringPlus</span>(b <span style="color:#555">*</span>testing.B) {
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; b.N; i<span style="color:#555">++</span> {
@@ -128,8 +130,8 @@
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>BenchmarkStringPlus           <span style="color:#f60">1000000000</span>               <span style="color:#f60">0.3160</span> ns<span style="color:#555">/</span>op          <span style="color:#f60">0</span> B<span style="color:#555">/</span>op          <span style="color:#f60">0</span> allocs<span style="color:#555">/</span>op
-</span></span></code></pre></div><p>哎？可以看到结果，如丝般畅滑，竟然一次内存分配都没有，而且执行时间也很短。难道go的性能如此强悍吗，其实不然，不要忘了go是一门编译语言，在执行前会进行编译，而go的编译优化也做的不错，对于这种字符串+拼接会提前进行编译优化，如果结果是可以提前预知的就会被优化，上述 &ldquo;GO&rdquo; + &ldquo;字符串&rdquo; + &ldquo;链接&rdquo; + &ldquo;速度&rdquo; + &ldquo;测试&rdquo; + &ldquo;!&rdquo; 会被优化为 <code>&quot;GO字符串链接速度测试!&quot;&lt;span&gt; &lt;/span&gt;</code>所以编译后的函数并没有任何运算而是直接返回了整个字符串，怪不得会这么快。</p>
-<p>所以我们需要绕过编译器优化，上面提到了如果结果是可以提前预知的就会被优化，那么我们就需要构造一个不能被编译器提前预知得字符串</p>
+</span></span></code></pre></div><p>哎？结果好像不太符合预期，竟然一次内存分配都没有，而且执行时间也很短。难道go的性能如此强悍吗？不要忘了go是一门编译语言，在执行前会进行编译，而go会默认开启一定程度的编译优化（可以通过参数 <code>-gcflags &quot;-N -l&quot;</code> 在编译期间关闭优化），对于这种字符串+拼接会提前进行编译优化，如果结果是可以提前预知的就会被优化，上述 <code>&quot;GO&quot; + &quot;字符串&quot; + &quot;链接&quot; + &quot;速度&quot; + &quot;测试&quot; + &quot;!&quot;</code> 会被直接优化为 <code>&quot;GO字符串链接速度测试!&quot;</code> 所以编译后的函数并没有任何运算而是直接返回了整个字符串，怪不得会这么快。</p>
+<p>所以如果我们想要测试出go中真正的字符串 <code>+</code> 运算速度需要绕过编译器优化，上面提到了如果结果是可以提前预知的就会被优化，那么我们就需要构造一个不能被编译器提前预知得字符串</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">StringPlus2</span>(p []<span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">var</span> s <span style="color:#078;font-weight:bold">string</span>
 </span></span><span style="display:flex;"><span>	l <span style="color:#555">:=</span> <span style="color:#366">len</span>(p)
@@ -155,13 +157,13 @@
 </span></span><span style="display:flex;"><span>		<span style="color:#c0f">StringPlus2</span>(p)
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>这里我们重新定义了StringPlus2 函数，将字符串通过函数参数传入，这样编译器就没有办法提前优化了。</p>
-<p>我们还定义了 initStrings 函数， 用来构造一个长度很长的字符串数组，这个函数也会重用在其他测试里。</p>
-<p>让我们看下没有了优化器编译后的结果</p>
+</span></span></code></pre></div><p>这里我们重新定义了 <code>StringPlus2</code> 函数，将字符串通过函数参数传入，这样编译器就没有办法提前计算出结果（因为参数是在运行时被传入的）从而避免被优化了。<br>
+我们还定义了 <code>initStrings</code> 函数， 用来构造一个长度很长的字符串数组，这个函数也会重用在其他测试里。<br>
+让我们看下没有了优化器编译后的结果</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f60">10000</span>            <span style="color:#f60">100171</span> ns<span style="color:#555">/</span>op          <span style="color:#f60">161840</span> B<span style="color:#555">/</span>op         <span style="color:#f60">99</span> allocs<span style="color:#555">/</span>op
-</span></span></code></pre></div><p>可以看到没有了编译器优化 + 运算就原形毕露了，在100个字符串的相加运算中，进行了99次内存分配，并且其他参数也不乐观，在线上环境完全不能接受。</p>
+</span></span></code></pre></div><p>可以看到没有了编译器优化 <code>+</code> 运算就原形毕露了，在100个字符串的相加运算中，进行了99次内存分配，并且其他参数也不乐观，在线上环境完全不能接受。</p>
 <h3 id="stringjoin">string.Join</h3>
-<p>go的string标准库提供了join函数，可以把给定的字符串数组拼接成一个新的字符串，同样的一般其他语言也有类似的实现。</p>
+<p>go的string标准库提供了 <code>join</code> 函数，可以把给定的字符串数组拼接成一个新的字符串，同样的一般其他语言也有类似的实现。</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">StringJoin</span>() <span style="color:#078;font-weight:bold">string</span> {
 </span></span><span style="display:flex;"><span>	stringList <span style="color:#555">:=</span> []<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;GO&#34;</span>, <span style="color:#c30">&#34;字符串&#34;</span>, <span style="color:#c30">&#34;链接&#34;</span>, <span style="color:#c30">&#34;速度&#34;</span>, <span style="color:#c30">&#34;测试&#34;</span>, <span style="color:#c30">&#34;!&#34;</span>}
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">return</span> strings.<span style="color:#c0f">Join</span>(stringList, <span style="color:#c30">&#34;&#34;</span>)
@@ -172,8 +174,8 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>结果如下</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>BenchmarkStringJoin     <span style="color:#f60">9582951</span>       <span style="color:#f60">175.3</span> ns<span style="color:#555">/</span>op      <span style="color:#f60">32</span> B<span style="color:#555">/</span>op      <span style="color:#f60">1</span> allocs<span style="color:#555">/</span>op
-</span></span></code></pre></div><p>可以看到 join函数只进行了一次内存分配，并且执行效率也还不错。join内部实现并没有傻乎乎的每个字符子串都去开辟内存，而是拿到所有需要拼接的字符串计算出需要的内存大小后只执行一次内存分配。</p>
-<p>这里可能会有同学疑问，不论join参数里的字符串数组大小有多少元素，join都只会执行一次内训分配吗，让我们来实验一下</p>
+</span></span></code></pre></div><p>可以看到 <code>join</code> 函数只进行了一次内存分配，并且执行效率也还不错。<code>join</code> 内部实现并没有傻乎乎的每个字符子串都去开辟内存，而是拿到所有需要拼接的字符串计算出需要的内存大小后只执行一次内存分配。</p>
+<p>这里可能会有同学疑问，不论 <code>join</code> 参数里的字符串数组大小有多少元素，<code>join</code> 都真的只会执行一次内存分配吗，让我们来实验一下</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">StringJoin2</span>(p []<span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">return</span> strings.<span style="color:#c0f">Join</span>(p, <span style="color:#c30">&#34;&#34;</span>)
 </span></span><span style="display:flex;"><span>}
@@ -185,7 +187,7 @@
 </span></span><span style="display:flex;"><span>		<span style="color:#c0f">StringJoin2</span>(p)
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>这里我们重用了上一节使用的 initStrings</p>
+</span></span></code></pre></div><p>这里我们重用了上一节使用的 <code>initStrings</code> 用来生成字符串</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>BenchmarkStringJoin2     <span style="color:#f60">409122</span>        <span style="color:#f60">3008</span> ns<span style="color:#555">/</span>op         <span style="color:#f60">3072</span> B<span style="color:#555">/</span>op      <span style="color:#f60">1</span> allocs<span style="color:#555">/</span>op
 </span></span></code></pre></div><p>可以看到我们将数组长度增加了到了100个，也确实还是值分配了一次内存。</p>
 <h3 id="bytesbuffer">bytes.Buffer</h3>
@@ -205,9 +207,9 @@
 </span></span><span style="display:flex;"><span>		<span style="color:#c0f">StringBuffer</span>()
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>首先我们先声明一个 Buffer 对象， 调用此对象的 WriteString 方法传入需要拼接的字符串，最后调用 String 方法输出结果。</p>
+</span></span></code></pre></div><p>首先我们先声明一个 <code>Buffer</code> 对象， 调用此对象的 <code>WriteString</code> 方法传入需要拼接的字符串，最后调用 String 方法输出结果。</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>BenchmarkStringBuffer      <span style="color:#f60">8894923</span>       <span style="color:#f60">200.1</span> ns<span style="color:#555">/</span>op         <span style="color:#f60">96</span> B<span style="color:#555">/</span>op      <span style="color:#f60">2</span> allocs<span style="color:#555">/</span>op
-</span></span></code></pre></div><p>可以看到 bytes.Buffer 结果也还不错，稍微比join要慢一点。</p>
+</span></span></code></pre></div><p>可以看到 <code>bytes.Buffer</code> 结果也还不错，稍微比 <code>join</code> 要慢一点。</p>
 <p>让我们也测试下大量的字符串拼接场景</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">StringBuffer2</span>(p []<span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">var</span> b bytes.Buffer
@@ -228,7 +230,7 @@
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>BenchmarkStringBuffer2      <span style="color:#f60">211426</span>         <span style="color:#f60">8234</span> ns<span style="color:#555">/</span>op      <span style="color:#f60">15168</span> B<span style="color:#555">/</span>op        <span style="color:#f60">8</span> allocs<span style="color:#555">/</span>op
 </span></span></code></pre></div><p>好像并不是太好，和<code>+</code>号，Join拼接差好远，内存分配也比较多。每次操作耗时也很长。</p>
 <h3 id="bytesbuilder">bytes.Builder</h3>
-<p>既然有了 bytes.Buffer， 那 bytes.Builder 又是做什么的呢，其实 bytes.Builder 是 bytes.Buffer 的优化版，在go 1.10中被加入到标准库，它的使用和 bytes.Buffer 几乎一样。</p>
+<p>既然有了 <code>bytes.Buffer</code>， 那 <code>bytes.Builder</code> 又是做什么的呢，其实 <code>bytes.Builder</code> 是 <code>bytes.Buffer</code> 的优化版，在go 1.10中被加入到标准库，它的使用和 <code>bytes.Buffer</code> 几乎一样。</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">StringBuilder</span>() <span style="color:#078;font-weight:bold">string</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">var</span> b strings.Builder
 </span></span><span style="display:flex;"><span>	b.<span style="color:#c0f">WriteString</span>(<span style="color:#c30">&#34;GO&#34;</span>)
@@ -244,10 +246,10 @@
 </span></span><span style="display:flex;"><span>		<span style="color:#c0f">StringBuilder</span>()
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>可以看到 bytes.Builder 在使用上和 bytes.Buffer 几乎一模一样。</p>
+</span></span></code></pre></div><p>可以看到 <code>bytes.Builder</code> 在使用上和 <code>bytes.Buffer</code> 几乎一模一样。</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>BenchmarkStringBuilder     <span style="color:#f60">9180396</span>      <span style="color:#f60">218.8</span> ns<span style="color:#555">/</span>op       <span style="color:#f60">56</span> B<span style="color:#555">/</span>op     <span style="color:#f60">3</span> allocs<span style="color:#555">/</span>op
 </span></span><span style="display:flex;"><span>BenchmarkStringBuffer      <span style="color:#f60">8894923</span>       <span style="color:#f60">200.1</span> ns<span style="color:#555">/</span>op         <span style="color:#f60">96</span> B<span style="color:#555">/</span>op      <span style="color:#f60">2</span> allocs<span style="color:#555">/</span>op
-</span></span></code></pre></div><p>可以看到的确有提升了，虽然每次分配的内存次数有点多，但是每次分配的内存大小比buffer要少。但是执行时间没有明显优化，难道是我们的场景太简单？让我们试下复杂场景。</p>
+</span></span></code></pre></div><p>可以看到的确有提升了，虽然每次分配的内存次数有点多，但是每次分配的内存大小比 <code>buffer</code> 要少。但是执行时间没有明显优化，难道是我们的场景太简单？让我们试下复杂场景。</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">StringBuilder2</span>(p []<span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">var</span> b strings.Builder
 </span></span><span style="display:flex;"><span>	l <span style="color:#555">:=</span> <span style="color:#366">len</span>(p)
@@ -267,10 +269,10 @@
 </span></span></code></pre></div><p>这里同样使用了100个元素的字符串数组，结果如下</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>BenchmarkStringBuffer2       <span style="color:#f60">211426</span>          <span style="color:#f60">8234</span> ns<span style="color:#555">/</span>op     <span style="color:#f60">15168</span> B<span style="color:#555">/</span>op          <span style="color:#f60">8</span> allocs<span style="color:#555">/</span>op
 </span></span><span style="display:flex;"><span>BenchmarkStringBuilder2      <span style="color:#f60">158857</span>          <span style="color:#f60">6506</span> ns<span style="color:#555">/</span>op     <span style="color:#f60">10464</span> B<span style="color:#555">/</span>op         <span style="color:#f60">10</span> allocs<span style="color:#555">/</span>op
-</span></span></code></pre></div><p>可以看到，Builder 的性能确实比 Buffer 要好，不仅速度快，而且每次执行的平均内存大小也要小，不过会多一两次的内存分配调用。</p>
-<p>那么 <code>Buffer&lt;span&gt; &lt;/span&gt;</code>优化了哪里？</p>
+</span></span></code></pre></div><p>可以看到，<code>Builder</code> 的性能确实比 <code>Buffer</code> 要好，不仅速度快，而且每次执行的平均内存大小也要小，不过会多一两次的内存分配调用。</p>
+<p>那么 <code>Buffer</code>优化了哪里？</p>
 <p><code>bytes.Buffer</code> 和 <code>bytes.Builder</code> 底层都使用了 byte数组 作为缓冲区存储，在go中 正常的byte数组转换为string是有一定性能花费的，需要开辟新的内存区域，将byte数组里的内容一个个copy到新内存里。</p>
-<p>但是 bytes.Builder 在 byte数组转换为string 这一步做了一些 hack处理，直接使用指针运算做的转换，避免了内存分配和数据拷贝。</p>
+<p>但是 <code>bytes.Builder</code> 在 byte数组转换为string 这一步做了一些 hack处理，直接使用指针运算做的转换，避免了内存分配和数据拷贝。</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> (b <span style="color:#555">*</span>Buffer) <span style="color:#c0f">String</span>() <span style="color:#078;font-weight:bold">string</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">if</span> b <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
 </span></span><span style="display:flex;"><span>		<span style="color:#09f;font-style:italic">// Special case, useful in debugging.
@@ -326,6 +328,8 @@
 
 <div class="content-footer-item neighbor">
 	
+	
+	<div class="next-post">Next: <a href="/posts/create_blog_with_github_pages/">借助github pages快速搭建blog</a></div>
 	
 </div>
 

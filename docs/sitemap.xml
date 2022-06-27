@@ -2,17 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://notes.chimission.cn/</loc>
+    <loc>https://notes.chimission.cn/</loc>
     <lastmod>2022-06-27T14:13:46+08:00</lastmod>
   </url><url>
-    <loc>http://notes.chimission.cn/posts/my-first-post/</loc>
+    <loc>https://notes.chimission.cn/posts/my-first-post/</loc>
     <lastmod>2022-06-27T14:13:46+08:00</lastmod>
   </url><url>
-    <loc>http://notes.chimission.cn/posts/</loc>
+    <loc>https://notes.chimission.cn/posts/</loc>
     <lastmod>2022-06-27T14:13:46+08:00</lastmod>
   </url><url>
-    <loc>http://notes.chimission.cn/categories/</loc>
+    <loc>https://notes.chimission.cn/categories/</loc>
   </url><url>
-    <loc>http://notes.chimission.cn/tags/</loc>
+    <loc>https://notes.chimission.cn/tags/</loc>
   </url>
 </urlset>

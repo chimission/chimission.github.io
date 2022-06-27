@@ -1,4 +1,4 @@
-baseURL = 'http://notes.chimission.cn/'
+baseURL = 'https://notes.chimission.cn/'
 languageCode = 'en-us'
 title = 'Chimission'
 theme = "simplog"

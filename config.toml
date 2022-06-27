@@ -1,7 +1,48 @@
 baseURL = 'https://notes.chimission.cn/'
 languageCode = 'en-us'
-title = 'Chimission'
+title = "Chimission's Notes"
 theme = "simplog"
 publishDir = "docs"
+author = "chimission"
+copyright = "Copyright © 2022, Chimission; all rights reserved."
+
+
 [params]
   colorTheme = "default"
+  [params.enabled]
+    summary = true
+
+
+[markup.highlight]
+  style = 'manni'# 样式参考 https://swapoff.org/chroma/playground
+
+[menu]
+
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 10
+
+  [[menu.main]]
+    identifier = "tags"
+    name = "Tags"
+    url = "/tags/"
+    weight = 20
+
+  [[menu.main]]
+    identifier = "categories"
+    name = "Categories"
+    url = "/categories/"
+    weight = 30
+
+  [[menu.main]]
+    identifier = "archives"
+    name = "Archives"
+    url = "/archives/"
+    weight = 40
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+  archive = "archives"

@@ -1,0 +1,69 @@
+{{define "main"}}
+
+{{ if templates.Exists "partials/top-of-content.html" }}
+  {{ partial "top-of-content.html" . }}
+{{ end }}
+
+<!--Title-->
+<h2>{{.Title}}</h2>
+{{ if or (not .Params.hideDate) (eq .Params.hideDate false) }}
+<span class="sub">{{.Date.Format "2006-01-02"}}</span>
+{{ end }}
+
+<!--Date-->
+
+<!--TOC-->
+{{ if eq .Site.Params.Enabled.Toc true }}
+{{.TableOfContents}}
+{{ end }}
+
+<!--Content-->
+{{.Content}}
+
+{{ if templates.Exists "partials/bottom-of-content.html" }}
+  {{ partial "bottom-of-content.html" . }}
+{{ end }}
+
+{{ if ne .Title "About" }}
+<!-- Content footer -->
+<hr class="block-separater">
+
+<!--Tag-->
+{{ $tags := .GetTerms "tags" }}
+{{ if gt (len $tags) 0 }}
+<div class="content-footer-item">
+	Tags for this post:
+	{{range (.GetTerms "tags")}}
+	<a class="post-tag" href="{{.RelPermalink}}">{{.LinkTitle}}</a>
+	{{end}}
+</div>
+{{ end }}
+
+<!-- disqus -->
+{{ if and (eq .Params.comments true) (eq .Site.Params.Enabled.Comment true) }}
+	{{ template "_internal/disqus.html" . }}
+{{ end }}
+
+{{ if or (not .Params.hideNeighbor) (eq .Params.hideNeighbor false) }}
+<!--Prev/Next-->
+<div class="content-footer-item neighbor">
+	{{with .PrevInSection}}
+	<div class="prev-post">Prev: <a href="{{.RelPermalink}}">{{.Title}}</a></div>
+	{{end}}
+	{{with .NextInSection}}
+	<div class="next-post">Next: <a href="{{.RelPermalink}}">{{.Title}}</a></div>
+	{{end}}
+</div>
+{{ end }}
+
+<!--Related-->
+<!-- related category -->
+{{ partial "related-category-posts.html" . }}
+
+<!-- related tag -->
+{{ partial "related-tag-posts.html" . }}
+{{ end }}
+
+<script src="{{ "/js/single.js" | relURL }}"></script>
+
+{{end}}

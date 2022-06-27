@@ -1,0 +1,3 @@
+[submodule "themes/simplog"]
+	path = themes/simplog
+	url = https://github.com/michimani/simplog.git

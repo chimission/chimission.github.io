@@ -1,0 +1,7 @@
+baseURL = 'http://notes.chimission.cn/'
+languageCode = 'en-us'
+title = 'Chimission'
+theme = "simplog"
+publishDir = "docs"
+[params]
+  colorTheme = "default"

@@ -1,0 +1,25 @@
+{{define "main"}}
+
+<!--$paginator-->
+{{$p := .Pages}}
+{{if .IsHome}}
+{{$p = where site.RegularPages "Type" "in" site.Params.mainSections}}
+{{else if eq .Kind "taxonomy"}}
+{{$p = $p.ByTitle}}
+{{end}}
+{{$paginator := .Paginate $p}}
+
+<!--list-->
+{{ if eq .IsHome false }}
+<h2>{{.Title}}</h2>
+{{ end }}
+<ul class="post-list">
+	{{range $paginator.Pages}}
+	{{ partial "li.html" (dict "context" . "isIndex" true) }}
+	{{end}}
+</ul>
+
+<!--pagination-->
+{{template "partials/pagination.html" .}}
+
+{{end}}

@@ -1,0 +1,69 @@
+{{ $lastBuld := now.Unix }}
+{{ $cacheHashBase := (sha1 $lastBuld) }}
+{{ $site := .Site }}
+{{ if not $site.IsServer }}
+{{ template "_internal/google_analytics.html" . }}
+{{ end }}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{ if .IsHome }}
+<title>{{ $site.Title }}</title>
+<meta name="description" content="{{ $site.Params.Description }}">
+{{ else }}
+<title>{{ .Title }} - {{ $site.Title }}</title>
+<meta name="description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ $site.Params.description }}{{ end }}">
+{{ end }}
+<meta name="author" content="{{ $site.Params.AuthorName }}">
+
+<link rel="apple-touch-icon" sizes="180x180" href="{{ "/images/apple-touch-icon.png" | relURL }}?c={{$cacheHashBase}}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ "/images/favicon.png" | relURL }}?c={{$cacheHashBase}}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ "/images/favicon-16x16.png" | relURL }}?c={{$cacheHashBase}}">
+<link rel="alternate" href="{{ "/index.xml" | relURL }}?c={{$cacheHashBase}}" type="application/rss+xml" title="RSS" />
+<meta property="og:title" content="{{ if .IsHome }}{{ $site.Title }}{{ else }}{{ .Title }} - {{ $site.Title }}{{ end }}">
+</meta>
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="{{ $site.Title }}">
+<meta property="og:description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ $site.Params.description }}{{ end }}">
+{{ with .Params.ogimage }}
+<meta property="og:image" content="{{ $site.BaseURL }}{{ . }}">
+{{ else }}
+<meta property="og:image" content="{{ $site.BaseURL }}/images/featured_image.jpg">
+{{ end }}
+<meta name="twitter:card" content="summary_large_image" /></meta>
+<meta name="twitter:site" content="@{{ $site.Params.Twitter }}"></meta>
+<meta name="twitter:creator" content="@{{ $site.Params.Twitter }}"></meta>
+<meta name="twitter:title" content="{{ if .IsHome }}{{ $site.Title }}{{ else }}{{ .Title }} - {{ $site.Title }}{{ end }}"></meta>
+<meta name="twitter:url" content="{{ .Permalink }}"></meta>
+<meta name="twitter:description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ $site.Params.description }}{{ end }}"></meta>
+{{ with .Params.ogimage }}
+<meta property="og:image" content="{{ $site.BaseURL }}{{ . }}">
+{{ else }}
+<meta property="og:image" content="{{ $site.BaseURL }}/images/featured_image.jpg">
+{{ end }}
+
+<link rel="stylesheet" href="{{ "/css/main.css" | relURL }}?c={{$cacheHashBase}}">
+<link rel="stylesheet" href="{{ "/css/color.css" | relURL }}?c={{$cacheHashBase}}">
+
+{{ with $site.Params.CustomCSS }}
+<link rel="stylesheet" href="{{ . | relURL }}?c={{$cacheHashBase}}">
+{{ end }}
+
+{{ with $site.Params.AdobeFontsKitId }}
+<!-- Adobe Fonts -->
+<script>
+  (function(d) {
+      var config = {
+      kitId: '{{ . }}',
+      scriptTimeout: 3000,
+      async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
+
+{{ if templates.Exists "partials/additional-custom-head.html" }}
+  {{ partial "additional-custom-head.html" $site }}
+{{ end }}
+
+{{ end }}

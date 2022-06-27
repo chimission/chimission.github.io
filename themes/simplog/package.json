@@ -1,0 +1,28 @@
+{
+  "name": "simplog",
+  "version": "1.0.0",
+  "description": "Simple blog theme for Hugo",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "css:scss": "node-sass static/scss -o static/css --output-style compressed",
+    "watch:scss": "watch 'npm run css:scss ' ./static/scss",
+    "test": "echo 'npm run test....'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michimani/simplog.git"
+  },
+  "author": "michimani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/michimani/simplog/issues"
+  },
+  "homepage": "https://github.com/michimani/simplog#readme",
+  "devDependencies": {
+    "node-sass": "^6.0.1",
+    "watch": "^0.13.0"
+  }
+}

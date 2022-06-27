@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Chimission</title>
+    <link>http://notes.chimission.cn/</link>
+    <description>Recent content on Chimission</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 27 Jun 2022 14:13:46 +0800</lastBuildDate><atom:link href="http://notes.chimission.cn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My First Post</title>
+      <link>http://notes.chimission.cn/posts/my-first-post/</link>
+      <pubDate>Mon, 27 Jun 2022 14:13:46 +0800</pubDate>
+      
+      <guid>http://notes.chimission.cn/posts/my-first-post/</guid>
+      <description>这是chimission的第一条中文信息</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -9,16 +9,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>借助github pages快速搭建blog - Chimission&#39;s Notes</title>
+<title>利用互联网资源免费部署一个全站 https blog - Chimission&#39;s Notes</title>
 <meta name="description" content="使用github pages 构建自己的博客笔记">
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2">
-<link rel="alternate" href="/index.xml?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2" type="application/rss+xml" title="RSS" />
-<meta property="og:title" content="借助github pages快速搭建blog - Chimission&#39;s Notes">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=9898bb3c4dde010020ee3994a3e2e8509539ab56">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=9898bb3c4dde010020ee3994a3e2e8509539ab56">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=9898bb3c4dde010020ee3994a3e2e8509539ab56">
+<link rel="alternate" href="/index.xml?c=9898bb3c4dde010020ee3994a3e2e8509539ab56" type="application/rss+xml" title="RSS" />
+<meta property="og:title" content="利用互联网资源免费部署一个全站 https blog - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/create_blog_with_github_pages/">
 <meta property="og:type" content="article">
@@ -30,15 +30,15 @@
 <meta name="twitter:card" content="summary_large_image" /></meta>
 <meta name="twitter:site" content="@"></meta>
 <meta name="twitter:creator" content="@"></meta>
-<meta name="twitter:title" content="借助github pages快速搭建blog - Chimission&#39;s Notes"></meta>
+<meta name="twitter:title" content="利用互联网资源免费部署一个全站 https blog - Chimission&#39;s Notes"></meta>
 <meta name="twitter:url" content="https://notes.chimission.cn/posts/create_blog_with_github_pages/"></meta>
 <meta name="twitter:description" content="使用github pages 构建自己的博客笔记"></meta>
 
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2">
-<link rel="stylesheet" href="/css/color.css?c=dc0a853f0cd7283c0d436aaf0d25b5d15384f8d2">
+<link rel="stylesheet" href="/css/main.css?c=9898bb3c4dde010020ee3994a3e2e8509539ab56">
+<link rel="stylesheet" href="/css/color.css?c=9898bb3c4dde010020ee3994a3e2e8509539ab56">
 
 
 
@@ -75,7 +75,7 @@
 
 
 
-<h2>借助github pages快速搭建blog</h2>
+<h2>利用互联网资源免费部署一个全站 https blog</h2>
 
 <span class="sub">2022-06-27</span>
 
@@ -87,9 +87,76 @@
 
 
 <blockquote>
-<p>作者的blog也托管在了github pages上    :-)</p>
+<p>介绍了一下此blog是怎么被搭建出来的    :-)</p>
 </blockquote>
-<h1 id="todo-write">TODO write</h1>
+<h3 id="起因">起因</h3>
+<p>想要搭建一个独立域名的博客用来记录和分享的念头在脑中存在很久了，最近工作不忙，趁机赶紧做起来。</p>
+<h3 id="技术选型">技术选型</h3>
+<p>需求很明确：容易部署、专注写作、低成本。经过一些调研我最终选择了以下的技术栈</p>
+<ul>
+<li><a href="https://docs.github.com/en/pages">Github Pages</a> <em>交友网站</em></li>
+<li><a href="https://github.com/gohugoio/hugo">Hugo</a> <em>go语言框架</em></li>
+<li><a href="https://markdown.lovejade.cn/">Markdown</a> <em>感谢这位作者，为我写作减轻了不少心智负担</em>🎉️</li>
+<li><a href="https://www.qiniu.com/">七牛云</a> <em>感谢七牛提供的免费存储额度</em></li>
+</ul>
+<h4 id="github-pages">Github Pages</h4>
+<p><code>Github Pages</code> 是一个可以从自己的 <code>Github</code> 源码仓库中直接生成页面的静态站点托管服务，不过它只能托管静态站点，不能运行服务器端源码，比如 <code>Python</code> 或者 <code>Ruby</code>。最主要的是，它是免费的，而且支持个人域名和<code>HTTPS</code>。静态站点可以让使用者更专注于写作本身。部署也很方便，最主要的时间成本是在前期git项目配置上，当项目配置好后，更新一篇文章只需要向关联的仓库push代码即可。</p>
+<p>更多详情可以访问<a href="https://docs.github.com/en/pages">官方文档</a>。</p>
+<h4 id="hugo">Hugo</h4>
+<p>选定了 <code>Github Pages</code>，那么就只能选择静态web框架，我之前并没有使用静态web框架的经验，所以对于框架的选择我其实没有什么特别要求，无论选择什么框架我都要从头开始学习，所以选一个社区活跃用户多的即可。因为最近在搞一些go语言的东西，最终我选择了使用go语言编写的 <code>Hugo</code>。</p>
+<p>更多详情可以访问<a href="https://gohugo.io/about/what-is-hugo/">官方文档</a>。</p>
+<h4 id="markdown">Markdown</h4>
+<p>这没什么好讲的了，任何一个合格的开发都应该学过这种文本格式（应该是的吧），<code>Hugo</code>对<code>Markdown</code>的支持也非常好。</p>
+<h3 id="部署">部署</h3>
+<h4 id="创建github仓库">创建github仓库</h4>
+<ol>
+<li>
+<p>首先在自己的github账号里创建一个仓库，起名 <code>xxx.github.io</code>，这个名字就是<code>github</code>默认赋予你的博客域名，所以至少要想一个让自己满意的名字。</p>
+</li>
+<li>
+<p>创建好仓库之后点击 <code>Setting</code>-&gt; <code>Page</code> 在 <code>Source</code> 栏选择网页对应的分支和文件夹，这里我选的是<code>master</code>分之和<code>docs/</code>目录。如果你使用的默认配置不做更改，在保存之后<code>github</code>会自动让你提交一个<code>commit</code>，提交之后就可以通过<code>https://xxx.github.io</code>这个域名访问网站了，<code>github</code>默认为使用者提供了一个首页。<code>github</code>甚至为我们提供了https，并且我们什么也不需要做 如果你不想继续折腾，到这一步网站就可以用了，后续编辑根目录下的<code>index.md</code>就可以同步更新网站了<img src="https://images.chimission.cn/blog/github_pages_setting.png" alt=""></p>
+</li>
+<li>
+<p>如果你有自己的域名，不想使用github默认分配(因为你觉得不够coooool)，就可以在<code>Custom domain</code>里填写自己的域名来替换<code>github</code>默认提供给你的域名 <code>xxx.github.io</code>，比如这里我填写的 <code>notes.chimission.cn</code>, 保存之后 <code>github</code>会在项目目录下生成一个 <code>CNAME</code> 文件， 文件内容就是自定义域名字符串。</p>
+</li>
+<li>
+<p>如果执行了<code>第三步</code>，那还需要在你的<code>域名服务商</code>那里添加一条<code>CNAME</code>记录， 使你的域名指向<code>github</code>为你分配的默认域名<code>xxx.github.io</code>。 <img src="https://images.chimission.cn/blog/dns_cname.png" alt=""><br>
+比如我这里创建了一条<code>notes</code>的记录，指向 <code>chimission.github.io</code>，保存之后就可以通过<code>http://notes.chimission.cn</code>来访问博客了(注意这里还没有开启https)。如果我们想开启https，也不用担心，在<code>Setting</code>-&gt; <code>Page</code>页面勾选<code>Enforce Https</code>后，<code>github</code>会自动为我们申请证书，这一切都不需要我们介入。等待一段时间后就可以通过<code>https://notes.chimission.cn</code>来访问网站了。<br>
+更多Https详情可以访问<a href="https://docs.github.com/cn/pages/getting-started-with-github-pages/securing-your-github-pages-site-with-https">官方文档</a>。</p>
+</li>
+</ol>
+<h4 id="使用hugo进行写作">使用Hugo进行写作</h4>
+<ol>
+<li>
+<p>部署环境搭建好了，现在我们只要修改了仓库里的文件，<code>github</code> 就会自动触发更新部署。但是手写html比较反人类，借助静态web框架可以为我们节省大量时间，让我们的注意力专注于写作本身。</p>
+</li>
+<li>
+<p><code>Hugo</code> 的 <a href="https://github.com/gohugoio/hugo">github主页</a> 详细介绍了安装方式，根据自己的环境安装即可。</p>
+</li>
+<li>
+<p>执行 <code>hugo new site xxx</code> 新建一个项目，进入到这个目录，把这个项目和上一节的<code>github</code>仓库关联。</p>
+</li>
+<li>
+<p>编辑 <code>config.toml</code>文件，添加 <code>publishDir = &quot;docs&quot;</code>，因为我在上一节设置的<code>github pages</code>部署目录是 <code>docs/</code>，所以我需要设置一下使 <code>Hugo</code> 的输出的html目录为<code>docs/</code>，这里因人而异。</p>
+</li>
+<li>
+<p>执行 <code>hugo new posts/firs_notes.md</code> hugo会在post目录下新建一个md文件，编辑这个文件随意写点东西，然后执行 <code>hugo server -D</code> hugo会在本地<code>localhost</code>启动服务器，让使用者预览文章效果。并且 <code>hugo</code> 会监听文件变动，如果你更新了目录下的文件，<code>hugo</code>会实时更新渲染。</p>
+</li>
+<li>
+<p>这里推荐一个<a href="https://markdown.lovejade.cn/">在线markdown编写网站</a>，提供了很多快捷键和预览功能。并且还提供了富文本转换功能，可以将富文本内容粘贴到编辑框内，网站会自动将其转换为md语言，非常不错的功能。</p>
+</li>
+<li>
+<p>当你结束完写作，想要推送到 <code>github</code> 更新网站时， 执行 <code>hugo -D</code>， hugo会编译post目录下的文件，在 <code>docs/</code> 目录下生成对应的html文件。最后将生成后的代码push到远程的<code>github</code>仓库中，稍微等一会，你的网站内容就更新了。</p>
+</li>
+</ol>
+<p>关于<code>Hugo</code>的更多使用可以访问<a href="https://gohugo.io/">这里</a></p>
+<h4 id="对象存储">对象存储</h4>
+<p>还有一个关键问题没有讨论 <strong>如何给文章配图</strong>。<br>
+图片一般不会保存在本地，因为相较于文本文件，图片存储占用太大了。最终我选择了七牛云，七牛云的对象存储服务有免费的10G额度，超过了才会收费，对于一个刚起步的网站来说， 七牛云提供的10G免费额度绰绰有余。还有个原因是因为我工作的老东家曾经是七牛云的客户，还算熟悉。 :-)<br>
+并且七牛云的图片链接可以自定义为自己的域名，并且添加https，这里我们可以申请为期一年的免费证书来做https认证。（相应的七牛云也会生成一个CNAME记录，需要你在域名服务商那里做个配置，比如我这里用的是 <code>images.chimission.cn</code>）</p>
+<h4 id="结果">结果</h4>
+<p>最终结果产出了本篇文章， 本篇文章使用 <code>markdown</code> 编写，使用 <code>Hogo</code> 编译， 图片存储在 <code>七牛云</code>，整个项目部署在 <code>github</code> 上。</p>
+<p>谢谢阅读!</p>
 
 
 

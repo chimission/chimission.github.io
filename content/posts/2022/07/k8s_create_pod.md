@@ -3,8 +3,8 @@ title: "聊一聊 输入 kubectl apply 时，k8s在背后做了什么"
 date: 2022-07-04T17:59:07+08:00
 draft: false
 author: "chimission"
-categories: [""]
-tags: [""]
+categories: ["k8s"]
+tags: ["k8s"]
 archives: ['2022', '2022-07']
 comments: false
 description: ""

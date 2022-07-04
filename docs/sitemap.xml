@@ -2,22 +2,31 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://notes.chimission.cn/archives/2022-06/</loc>
-    <lastmod>2022-06-27T23:09:19+08:00</lastmod>
+    <loc>https://notes.chimission.cn/archives/2022/</loc>
+    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/archives/2022-07/</loc>
+    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/archives/</loc>
+    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/</loc>
+    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/posts/</loc>
+    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/posts/k8s_create_pod/</loc>
+    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/archives/2022-06/</loc>
     <lastmod>2022-06-27T23:09:19+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/categories/</loc>
     <lastmod>2022-06-27T23:09:19+08:00</lastmod>
   </url><url>
-    <loc>https://notes.chimission.cn/</loc>
-    <lastmod>2022-06-27T23:09:19+08:00</lastmod>
-  </url><url>
     <loc>https://notes.chimission.cn/tags/github/</loc>
-    <lastmod>2022-06-27T23:09:19+08:00</lastmod>
-  </url><url>
-    <loc>https://notes.chimission.cn/posts/</loc>
     <lastmod>2022-06-27T23:09:19+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/tags/</loc>

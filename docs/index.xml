@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
-    <lastBuildDate>Mon, 27 Jun 2022 23:09:19 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 04 Jul 2022 17:59:07 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>聊一聊 输入 kubectl apply 时，k8s在背后做了什么</title>
+      <link>https://notes.chimission.cn/posts/k8s_create_pod/</link>
+      <pubDate>Mon, 04 Jul 2022 17:59:07 +0800</pubDate>
+      
+      <guid>https://notes.chimission.cn/posts/k8s_create_pod/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;介绍了一下k8s是如何通过命令行启动pod :-)  这是一篇旧文，迁移到此&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
     <item>
       <title>利用互联网资源免费部署一个全站 https blog</title>
       <link>https://notes.chimission.cn/posts/create_blog_with_github_pages/</link>

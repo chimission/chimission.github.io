@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+
+
+
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>聊一聊 输入 kubectl apply 时，k8s在背后做了什么 - Chimission&#39;s Notes</title>
+<meta name="description" content="">
+
+<meta name="author" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=e09defeec282d9d628fe30af309995859e151a2c">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=e09defeec282d9d628fe30af309995859e151a2c">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=e09defeec282d9d628fe30af309995859e151a2c">
+<link rel="alternate" href="/index.xml?c=e09defeec282d9d628fe30af309995859e151a2c" type="application/rss+xml" title="RSS" />
+<meta property="og:title" content="聊一聊 输入 kubectl apply 时，k8s在背后做了什么 - Chimission&#39;s Notes">
+</meta>
+<meta property="og:url" content="https://notes.chimission.cn/posts/k8s_create_pod/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Chimission&#39;s Notes">
+<meta property="og:description" content="">
+
+<meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
+
+<meta name="twitter:card" content="summary_large_image" /></meta>
+<meta name="twitter:site" content="@"></meta>
+<meta name="twitter:creator" content="@"></meta>
+<meta name="twitter:title" content="聊一聊 输入 kubectl apply 时，k8s在背后做了什么 - Chimission&#39;s Notes"></meta>
+<meta name="twitter:url" content="https://notes.chimission.cn/posts/k8s_create_pod/"></meta>
+<meta name="twitter:description" content=""></meta>
+
+<meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
+
+
+<link rel="stylesheet" href="/css/main.css?c=e09defeec282d9d628fe30af309995859e151a2c">
+<link rel="stylesheet" href="/css/color.css?c=e09defeec282d9d628fe30af309995859e151a2c">
+
+
+
+
+</head>
+
+<body class="theme-default">
+
+
+<div id="content-header" class="title">
+  
+  <a class="site-title" href="/">Chimission&#39;s Notes</a>
+  
+  <span class="site-sub-title"></span>
+
+  
+
+  <div id="main-menu-nav">
+    <div id="main-menu-nav-items">
+      
+        <div class="nav-item"><a href="/about/">About</a></div>
+      
+        <div class="nav-item"><a href="/tags/">Tags</a></div>
+      
+        <div class="nav-item"><a href="/categories/">Categories</a></div>
+      
+        <div class="nav-item"><a href="/archives/">Archives</a></div>
+      
+    </div>
+  </div>
+</div>
+<div id="content" class="main">
+
+
+
+
+<h2>聊一聊 输入 kubectl apply 时，k8s在背后做了什么</h2>
+
+<span class="sub">2022-07-04</span>
+
+
+
+
+
+
+
+
+<blockquote>
+<p>介绍了一下k8s是如何通过命令行启动pod :-)  这是一篇旧文，迁移到此</p>
+</blockquote>
+<p>如果我们想在<code>kubernetes</code>集群中创建3个相同<code>nginx</code>镜像的<code>pod</code>，官方推荐的做法是定义一个更高一级抽象的<code>deployment</code>, 通过这个<code>deployment</code>来统一管理一组pod，并且使用声明式命令<code>apply</code>代替 指令式命令<code>create</code>来创建<code>deployment</code>对象
+配置文件<code>deployment.yml</code>如下, 来自<code>kubernetes</code>官网</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#309;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>apps/v1<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">kind</span>:<span style="color:#bbb"> </span>Deployment<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">metadata</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">name</span>:<span style="color:#bbb"> </span>nginx-deployment<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">selector</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">matchLabels</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">app</span>:<span style="color:#bbb"> </span>nginx<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">replicas</span>:<span style="color:#bbb"> </span><span style="color:#f60">2</span><span style="color:#bbb"> </span><span style="color:#09f;font-style:italic"># tells deployment to run 2 pods matching the template</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">template</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">metadata</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">labels</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">app</span>:<span style="color:#bbb"> </span>nginx<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">containers</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>- <span style="color:#309;font-weight:bold">name</span>:<span style="color:#bbb"> </span>nginx<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">image</span>:<span style="color:#bbb"> </span>nginx:1.14.2<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">ports</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>- <span style="color:#309;font-weight:bold">containerPort</span>:<span style="color:#bbb"> </span><span style="color:#f60">80</span><span style="color:#bbb">
+</span></span></span></code></pre></div><p>在 <code>shell</code> 中我们敲下 <code>kubectl apply -f deployment.yml</code> 后，<code>k8s</code> 就会为我们在 <code>etcd</code> 中生成<code>deployment</code> 和 <code>pod</code> 对象并将 <code>pod</code> 通过一系列的算法自动调度到集群节点上启动，这一切都是 <code>k8s</code> 自动帮我们完成的，我们只需要提供一份配置文件即可。<code>k8s</code> 在背后究竟是怎么做到的呢，让我们一探究竟。本篇文章省略了很多技术细节，一方面这些展开讲述细节需要大量的篇幅，另一方面作者也没有完全掌握这些细节，所以我们会放在后续的系列文章中继续探讨。</p>
+<h2 id="构造请求">构造请求</h2>
+<p><code>k8s</code> 集群使用 <code>REST API</code>进行通信, 请求会以<code>HTTP</code>的方式发给 <code>kube-apiserver</code> 进行处理。当我们是在<code>shell</code> 中输入 <code>kubectl apply -f deployment.yml</code>时，本地的 <code>kubectl</code> 会解析 <code>yaml</code> 中的配置根据其内容构造相应对象的 <code>HTTP</code> 请求参数。首先 <code>kubectl</code>会检查有没有语法错误（比如创建不支持的资源或使用格式错误的镜像名称），出现错误后会直接返回不会发送到 <code>kube-apiserver</code> 以节省网络负载。通过检查后 <code>kubectl</code> 就会构造出 <code>HTTP</code> 请求发送给 <code>kube-apiserver</code>。</p>
+<h2 id="2-认证鉴权准入控制">2 认证，鉴权，准入控制</h2>
+<p>现在请求已经发送给了 <code>kube-apiserver</code>，<code>kube-apiserver</code> 接下来会判断这个请求的发起者是否合法，即请求发起者对应的用户信息是否存储 <code>k8s</code> 集群中，此过程称为<strong>认证</strong> <code>Authentication</code>。<code>k8s</code> 提供了多种<a href="https://kubernetes.io/zh-cn/docs/reference/access-authn-authz/authentication">认证方式</a>，这里我们不做过多的讨论，如果认证没有通过则会直接返回失败的错误信息，通过了就会进入一步 <strong>鉴权</strong>。</p>
+<p>虽然我们的身份已经得到了 <code>k8s </code>的认可，但是身份 <code>identity</code> 和许可 <code>permission</code> 并不是一个概念，就像<code>mysql</code>账号有的有读写权限而有的只有读取权限一样。此时 <code>kube-apiserver</code> 会检查用户的权限是否可以进行相应的操作，对应我们文章中的命令就是创建 <code>deployment</code> 的权限，这里 <code>k8s</code> 也提供了<a href="https://kubernetes.io/zh/docs/reference/access-authn-authz/authorization/">多种方式</a>进行鉴权不再赘述。</p>
+<p>好了 kube-apiserver 确认请求发起者有相应的权限，这样就可以执行创建 <code>deployment</code> 的动作了吗。 很“不幸”还有最后一步， <strong>准入控制</strong> 。<code>Kubernetes</code> 准入控制器是控制和强制使用集群的一种插件。我们可以把它看作是拦截（已认证）API 请求的拦截器，它可以更改请求对象，甚至完全拒绝请求。这是可以配置的插件，也就是说你通过这套机制自己开发一套插件部署在集群中来控制请求的行为。<code>k8s</code>官方提供了很多<a href="https://kubernetes.io/zh/docs/reference/access-authn-authz/admission-controllers/">“内置”的准入控制器</a>。</p>
+<h2 id="3-etcd">3 etcd</h2>
+<p>终于我们的请求被验证通过，<code>kube-apiserver</code> 会在 <code>etcd</code> （服务发现的后端，存储了集群的状态及其配置）中创建我们的<code>Deployment</code>对象， 创建过程中出现的任何错误都会被捕获，最后 <code>kube-apiserver</code> 会构造 <code>HTTP</code> 响应返回给客户端，我们在输入完命下回车之后看到的信息就是 <code>kubectl</code> 得到 <code>HTTP</code> 响应解析后的信息。注意此时我们部署的 <code>Deployment</code> 对象现在虽然保存在于 <code>etcd</code> 中，但是它还没有被部署到真正的 <code>Node</code> 上。</p>
+<h1 id="4-控制循环-control-loops">4 控制循环 （Control loops）</h1>
+<p>接下来的步骤对于请求调用者来说都是异步执行的，因为请求的响应已经在上一步得到了。</p>
+<p>我们已经创建了<code>Deployment</code>，但是并没有创建涉及 <code>Deployment</code> 所依赖的资源拓扑（此例子中就是<code>ReplicaSet</code> 和<code>Pod</code> ）这其实是k8s通过内置控制器 <code>Controller</code>自动帮我们创建的。</p>
+<p><code>Controller</code> 是一个用于将系统状态从<code>当前状态</code>调谐到<code>期望状态</code>的异步脚本。所有内置的 <code>Controller</code> 都通过组件 <code>kube-controller-manager</code> 并行运行，每种 <code>Controller</code> 都负责一种具体的控制流程。</p>
+<p>比如我们本次使用到的 <code>Deployment Controller</code></p>
+<p>当<code>k8s</code>在<code>etcd</code>中新创建了一个<code>Deployment</code>对象， <code>Deployment Controller</code>会监听（ <strong>ListAndWatch</strong> ）到这个事件之后然后检查<code>Deployment</code>这个对象的期望状态，和实际状态作对比，比如这次检查到相关联的对象<code>ReplicaSet</code>（因为本质上 <code>Deployment</code> 是通过控制 <code>ReplicaSet</code> 来控制 <code>Pod</code> 的）没有被创建，<code>Deployment Controller</code> 就会创建关联的 <code>ReplicaSet</code> ，创建 <code>ReplicaSet</code> 之后 <code>Deployment Controller</code> 的并不会检查对应管理的<code>Pod</code>，这是<code>ReplicaSet Controller</code>的工作。</p>
+<p><code>ReplicaSet Controller</code> 和 <code>Deployment Controller</code> 工作类似，<code>ReplicaSet Controller</code> 监听的是<code>ReplicaSet</code> 这个对象， 当<code>ReplicaSet</code> 被创建时就会检查这个 <code>ReplicaSet</code> 对象对应的期望状态，创建  <code>Pod</code> 对象。</p>
+<p>这里也可以看出<code>Deployment</code>并不是直接管理<code>Pod</code>，而是通过 <code>ReplicaSet</code>，即 <code>Deployment </code>管理<code>ReplicaSet</code>， <code>ReplicaSet</code>管理<code>Pod</code>。</p>
+<p>实际上 <code>Control loops</code> 的细节有很多，包括 实现监听的<strong>Informer</strong>机制，内部工作队列 <code>WorkQueue</code>， 本地缓存等等，如果全部展开如要大量的篇幅，而且作者也并没有完全掌握内部细节，我会在后续系列文章再次总结。</p>
+<p>而此时我们也只是在 <code>etcd</code> 中创建了 <code>Deployment，ReplicaSet</code>， <code>Pod</code> 这3个对象，还没有在实际 <code>Node</code> 中部署。</p>
+<h2 id="5-调度-scheduler">5 调度 （Scheduler）</h2>
+<p>接下来到了调度环节。</p>
+<p>当所有的 <code>Controller</code> 正常运行后，<code>etcd</code> 中就会保存一个 <code>Deployment</code>、一个 <code>ReplicaSet</code> 和 三个 <code>Pod</code>， 并且可以通过 <code>kube-apiserver</code> 查看到。这时如果你在<code>shell</code>里 <code>get pod</code>查看刚才的<code>pod</code>状态 你会看到<code>Pending</code>状态（调度中，即它们还没有被调度到集群中合适的 Node 上）。</p>
+<p><code>k8s</code>是依靠<code>Scheduler</code>这个组件完成调度操作的。<code>Scheduler</code> 组件运行在集群控制平面上，工作方式与其他 <code>Controller</code> 相同：监听事件并调谐状态。具体来说， <code>Scheduler</code> 的作用是过滤 <code>PodSpec</code> 中 <code>NodeName</code> 字段为空的 <code>Pod</code> 并尝试将其调度到合适的节点。<code>Scheduler</code> 会经过一系列的比如资源限制（cpu，内存）等算法首先选出一批符合条件的 <code>Node</code>， 然后通过第二轮算法（列如负载均衡情况）给 <code>Node</code> 打分，将 <code>Pod</code> 调度最高分的 <code>Node</code> 上，调度器就会将<code>Pod</code>对象的<code>nodeName</code>字段的值，修改为上述<code>Node</code>的名字。度器对一个 <code>Pod</code> 调度成功，实际上就是将它的 <code>spec.nodeName</code> 字段填上调度结果的节点名字。</p>
+<p>不可避免的，这里也包含了很多细节，我们也会在后续文章中详细讨论。</p>
+<h2 id="6-kubelet">6 Kubelet</h2>
+<p>终于到了激动人心的真正的容器启动环节。</p>
+<p>我们来总结一下已经完成的任务：</p>
+<ol>
+<li><code>HTTP</code> 请求通过了认证、授权和准入控制阶段；</li>
+<li>一个 <code>Deployment</code>、<code>ReplicaSet</code> 和三个 <code>Pod</code> 被持久化到 <code>etcd</code>；</li>
+<li>最后每个 <code>Pod</code> 都被调度到合适的节点。</li>
+</ol>
+<p>到目前为止，所有的工作仅仅只是针对保存在 <code>etcd</code> 中的资源对象，接下来的步骤涉及到在工作节点之间运行具体的容器，这是分布式系统 <code>Kubernetes</code> 的关键因素。这些事情都是由 <code>Kubelet</code> 完成的。</p>
+<p>在 <code>Kubernetes</code> 集群中，每个 <code>Node</code> 节点上都会启动一个 <code>Kubelet</code> 服务进程，该进程用于处理 <code>Scheduler</code> 下发到本节点的 <code>Pod</code> 并管理其生命周期。这意味着它将处理 <code>Pod</code> 与 <code>Container Runtime</code> 之间所有的转换逻辑，包括挂载卷、容器日志、垃圾回收等操作。</p>
+<p>我们可以把 <code>Kubelet</code> 当成一种特殊的 <code>Controller</code>，它每隔 20 秒（可以自定义）向 <code>kube-apiserver</code> 查询 <code>Pod</code>，过滤 <code>NodeName</code> 与自身所在节点匹配的 <code>Pod</code> 列表。</p>
+<p>当检测到新的 <code>pod</code> 对象还没有在 <code>Node</code> 上创建时，Kubelet进行一些前置操作，然后通过 <code>CRI（Container Runtime Interface）</code> 创建 <code>pause</code> 容器，通过 <code>CNI (Container Network Interface)</code> 为 <code>Pod</code> 设置网络，最后通过<code>CRI</code>拉取我们文件定义中的 <code>nginx</code> 镜像，创建并启动起来！</p>
+<h2 id="总结">总结</h2>
+<p><img src="https://images.chimission.cn/blog/k8s_create_pod.png" alt=""><br>
+最终我们的集群上会运行三个容器，这三个容器可能分布在不同的Node上，而这一切只需要我们编写一份文章开头的yml配置文件，Amazing！</p>
+
+
+
+
+
+<hr class="block-separater">
+
+
+
+
+
+
+
+
+
+
+<div class="content-footer-item neighbor">
+	
+	<div class="prev-post">Prev: <a href="/posts/create_blog_with_github_pages/">利用互联网资源免费部署一个全站 https blog</a></div>
+	
+	
+</div>
+
+
+
+
+
+
+    
+    
+    
+
+
+
+
+
+
+    
+    
+    
+
+
+
+
+<script src="/js/single.js"></script>
+
+
+	</div><div id="content-footer" class="sub">
+  Copyright © 2022, Chimission; all rights reserved.
+  <div class="credit">
+    Power by <a href="https://gohugo.io">Hugo</a> /
+    Theme <a href="https://github.com/michimani/simplog/">simplog</a> by <a href="https://github.com/michimani/">michimani</a>
+  </div>
+</div></body>
+
+</html>

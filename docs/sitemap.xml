@@ -3,18 +3,39 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://notes.chimission.cn/archives/2022/</loc>
-    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
+    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/archives/2022-07/</loc>
-    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
+    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/archives/</loc>
-    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
+    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/categories/</loc>
+    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/</loc>
-    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
+    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/categories/network/</loc>
+    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/posts/</loc>
+    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/tags/</loc>
+    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/tags/tcp/</loc>
+    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/posts/tcp_handshake/</loc>
+    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/tags/k8s/</loc>
+    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/categories/k8s/</loc>
     <lastmod>2022-07-04T17:59:07+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/posts/k8s_create_pod/</loc>
@@ -23,13 +44,7 @@
     <loc>https://notes.chimission.cn/archives/2022-06/</loc>
     <lastmod>2022-06-27T23:09:19+08:00</lastmod>
   </url><url>
-    <loc>https://notes.chimission.cn/categories/</loc>
-    <lastmod>2022-06-27T23:09:19+08:00</lastmod>
-  </url><url>
     <loc>https://notes.chimission.cn/tags/github/</loc>
-    <lastmod>2022-06-27T23:09:19+08:00</lastmod>
-  </url><url>
-    <loc>https://notes.chimission.cn/tags/</loc>
     <lastmod>2022-06-27T23:09:19+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/categories/wirte/</loc>

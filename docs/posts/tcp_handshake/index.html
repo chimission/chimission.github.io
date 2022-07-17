@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+
+
+
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>TCP为什么需要三次握手 - Chimission&#39;s Notes</title>
+<meta name="description" content="tcp三次握手">
+
+<meta name="author" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=cb9eec4704f8014786beefeb2149c75dbc647bc8">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=cb9eec4704f8014786beefeb2149c75dbc647bc8">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=cb9eec4704f8014786beefeb2149c75dbc647bc8">
+<link rel="alternate" href="/index.xml?c=cb9eec4704f8014786beefeb2149c75dbc647bc8" type="application/rss+xml" title="RSS" />
+<meta property="og:title" content="TCP为什么需要三次握手 - Chimission&#39;s Notes">
+</meta>
+<meta property="og:url" content="https://notes.chimission.cn/posts/tcp_handshake/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Chimission&#39;s Notes">
+<meta property="og:description" content="tcp三次握手">
+
+<meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
+
+<meta name="twitter:card" content="summary_large_image" /></meta>
+<meta name="twitter:site" content="@"></meta>
+<meta name="twitter:creator" content="@"></meta>
+<meta name="twitter:title" content="TCP为什么需要三次握手 - Chimission&#39;s Notes"></meta>
+<meta name="twitter:url" content="https://notes.chimission.cn/posts/tcp_handshake/"></meta>
+<meta name="twitter:description" content="tcp三次握手"></meta>
+
+<meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
+
+
+<link rel="stylesheet" href="/css/main.css?c=cb9eec4704f8014786beefeb2149c75dbc647bc8">
+<link rel="stylesheet" href="/css/color.css?c=cb9eec4704f8014786beefeb2149c75dbc647bc8">
+
+
+
+
+</head>
+
+<body class="theme-default">
+
+
+<div id="content-header" class="title">
+  
+  <a class="site-title" href="/">Chimission&#39;s Notes</a>
+  
+  <span class="site-sub-title"></span>
+
+  
+
+  <div id="main-menu-nav">
+    <div id="main-menu-nav-items">
+      
+        <div class="nav-item"><a href="/about/">About</a></div>
+      
+        <div class="nav-item"><a href="/tags/">Tags</a></div>
+      
+        <div class="nav-item"><a href="/categories/">Categories</a></div>
+      
+        <div class="nav-item"><a href="/archives/">Archives</a></div>
+      
+    </div>
+  </div>
+</div>
+<div id="content" class="main">
+
+
+
+
+<h2>TCP为什么需要三次握手</h2>
+
+<span class="sub">2022-07-17</span>
+
+
+
+
+
+
+
+
+<blockquote>
+<p>你真的知道tcp为什么需要握手3次吗</p>
+</blockquote>
+<p>TCP协议作为网络传输的基础协议之一，学过计算机的同学都知道一条基本的原则 &ndash; <code>TCP 协议建立连接需要经过双方三次握手（handshake）</code>。</p>
+<p>相信大家也或多或少看到过下面这个类比，来解释为什么TCP需要3次握手来建立连接</p>
+<blockquote>
+<p>1 你能听见我吗？<br>
+2 我能听见你，你能听见我吗？<br>
+3 我能听见你</p>
+</blockquote>
+<p>我在刚开始学习计算机网络的时候也觉得这样能够很好的解释为什么TCP需要3次握手来建立连接，但是这种类比的问题在于，把复杂的问题简单化了，这虽然有助于我们快速理解相关概念，但是缺点是丢失了上下文，把问题需要注意的关键细节隐藏了起来。当我们想要深入挖掘问题的本质时，类比就无能为力了。</p>
+<h3 id="连接是什么">连接是什么</h3>
+<p>解答为什么之前首先我们需要先明确一下什么是<code>连接</code>。</p>
+<p>很多TCP协议的教学文章都没有明确对<code>连接</code>给出一个解释，<a href="https://en.wikipedia.org/wiki/Handshaking">RFC 793 - Transmission Control Protocol </a>给出了对<code>连接</code>的明确定义：</p>
+<blockquote>
+<p>Connections:
+The reliability and flow control mechanisms described above require
+that TCPs initialize and maintain certain status information for
+each data stream.  The combination of this information, including
+sockets, sequence numbers, and window sizes, is called a connection.
+Each connection is uniquely specified by a pair of sockets
+identifying its two sides.</p>
+</blockquote>
+<p>即<code>连接</code>是数据结构，这些数据结构用来保证TCP通信的可靠性和流控制机制（Socket、序列号以及窗口大小）。建立<code>连接</code>实际上就是初始化这些数据结构的过程。<code>连接</code>完成就是初始化完数据结构，两端就可以依靠这些数据结构记录的信息进行数据传输了。</p>
+<h3 id="三次握手">三次握手</h3>
+<p>让我们来看一下<code>连接</code>建立的过程，即三次握手初始化相关数据结构的过程。</p>
+<ol>
+<li>首先<code>客户端</code>发起连接请求，发送一个 TCP 的 SYN 标志位置1的包(SYN=1, seq=x)，指明<code>客户端</code>要连接的<code>服务端</code>端口，以及初始序号 X,保存在包头的序列号(Sequence Number)字段里。</li>
+<li><code>服务端</code>发回确认包(SYN=1, ACK=1, seq=y, ACKnum=x+1)应答。即 SYN 标志位和 ACK 标志位均为1。<code>服务端</code>生成自己 ISN 序列号，放到 Seq 域里，同时将确认序号(Acknowledgement Number)设置为<code>客户端</code>的 ISN 加1，即X+1。 发送完毕后，<code>服务端</code>进入 SYN_RCVD 状态。</li>
+<li><code>客户端</code>再次发送确认包(ACK=1，ACKnum=y+1)，SYN 标志位为0，ACK 标志位为1，并且把<code>服务端</code>发来 ACK 的序号字段+1，放在确定字段中发送给对方，并且在数据段放写ISN的+1。发送完毕后，<code>客户端</code>进入 ESTABLISHED 状态，当<code>服务端</code>接收到这个包时，也进入 ESTABLISHED 状态，TCP 握手结束， <code>连接</code>建立。<br>
+通过上边总结的过程我们知道了TCP连接过程主要是两端共同协商初始化了各自的数据结构，包括创建socket，确定seq，ack值等等。</li>
+</ol>
+<h3 id="两次握手">两次握手</h3>
+<p>想象一下，如果TCP使用的是两次握手会出现什么情况？
+在我们回顾TCP三次握手过程中，并没有考虑网络拥堵状况，如果在握手过程中网络状况复杂或者比较差，<code>客户端</code>发送的请求包会滞留在网络中<code>服务端</code>收不到请求也就不会有回复，从而引起<code>客户端</code>超时重试。现在问题来了，网络中存在两个<code>客户端</code>请求包，会前后分别到达<code>服务端</code>，如果TCP只有两次通信的机会，那么服务端只能选择接受或者拒绝请求，因为<code>服务端</code>没有请求包的上下文。
+所以TCP需要三次通信来让<code>客户端</code>确认<code>服务端</code>接受到的请求是有效的，当<code>服务端</code>收到了请求包时，<code>服务端</code>会将请求包里的 seq 加1 返回给<code>客户端</code>（对应在三次握手的第二步），由<code>客户端</code>来判断此次请求是否有效。</p>
+<p>如果当前连接是历史连接，即 seq 过期或者超时，那么<code>客户端</code>就会直接发送 rst 控制消息中止这一次连接；
+如果当前连接是有效的，那么<code>客户端</code>就会发送 ack 控制消息，通信双方就会成功建立连接；
+<code>服务端</code>会根据接收到的消息作出不同的处理。</p>
+<h3 id="总结">总结</h3>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc793">RFC 793 - Transmission Control Protocol</a>里也指出了TCP 连接三次握手的主要原因 —— 为了阻止旧的的重复连接初始化造成的混乱问题，防止使用 TCP 协议通信的双方建立了错误的连接。</p>
+<blockquote>
+<p>The principle reason for the three-way handshake is to prevent old duplicate connection initiations from causing confusion.</p>
+</blockquote>
+<p>至于为什么是3次而不是4次5次，这是因为 TCP 消息头的设计，TCP可以将中间的两次通信合成一个同时发送 ACK 和 SYN 控制消息，进而减少一次通信成本，讨论使用更多的通信次数来建立连接是没有意义的，因为我们总可以使用更多的通信次数交换相同的信息，所以使用四次、五次或者更多次数建立连接在技术上是完全可以实现的，为了节省成本，当然是越少的通信次数越好。</p>
+
+
+
+
+
+<hr class="block-separater">
+
+
+
+
+<div class="content-footer-item">
+	Tags for this post:
+	
+	<a class="post-tag" href="/tags/tcp/">tcp</a>
+	
+</div>
+
+
+
+
+
+
+
+<div class="content-footer-item neighbor">
+	
+	<div class="prev-post">Prev: <a href="/posts/k8s_create_pod/">聊一聊 输入 kubectl apply 时，k8s在背后做了什么</a></div>
+	
+	
+</div>
+
+
+
+
+
+
+    
+    
+    
+
+
+
+
+
+
+    
+    
+    
+
+
+
+
+<script src="/js/single.js"></script>
+
+
+	</div><div id="content-footer" class="sub">
+  Copyright © 2022, Chimission; all rights reserved.
+  <div class="credit">
+    Power by <a href="https://gohugo.io">Hugo</a> /
+    Theme <a href="https://github.com/michimani/simplog/">simplog</a> by <a href="https://github.com/michimani/">michimani</a>
+  </div>
+</div></body>
+
+</html>

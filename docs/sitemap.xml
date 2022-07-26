@@ -3,27 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://notes.chimission.cn/archives/2022/</loc>
-    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/archives/2022-07/</loc>
-    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/archives/</loc>
-    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/categories/</loc>
-    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/</loc>
-    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
-    <loc>https://notes.chimission.cn/categories/network/</loc>
-    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+    <loc>https://notes.chimission.cn/categories/monitor/</loc>
+    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/posts/</loc>
-    <lastmod>2022-07-17T20:41:32+08:00</lastmod>
+    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/tags/prometheus/</loc>
+    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/tags/</loc>
+    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/posts/cloud_native_monitor/</loc>
+    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/categories/network/</loc>
     <lastmod>2022-07-17T20:41:32+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/tags/tcp/</loc>

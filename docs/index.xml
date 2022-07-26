@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
-    <lastBuildDate>Sun, 17 Jul 2022 20:41:32 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 25 Jul 2022 21:09:46 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>通过钉钉机器人自动化报警运维</title>
+      <link>https://notes.chimission.cn/posts/cloud_native_monitor/</link>
+      <pubDate>Mon, 25 Jul 2022 21:09:46 +0800</pubDate>
+      
+      <guid>https://notes.chimission.cn/posts/cloud_native_monitor/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;prometheus+alertmanager+dingtalk 实现运维监控报警&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
     <item>
       <title>TCP为什么需要三次握手</title>
       <link>https://notes.chimission.cn/posts/tcp_handshake/</link>

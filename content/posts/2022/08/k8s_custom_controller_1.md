@@ -24,4 +24,76 @@ url: "/posts/k8s_custom_controller_1/"
 ### 自定义资源是什么
 > A custom resource is an extension of the Kubernetes API that is not necessarily available in a default Kubernetes installation. It represents a customization of a particular Kubernetes installation. However, many core Kubernetes functions are now built using custom resources, making Kubernetes more modular.  
 
-> 自定义资源（Custom Resource） 是对 Kubernetes API 的扩展，不一定在默认的 Kubernetes 安装中就可用。自定义资源所代表的是对特定 Kubernetes 安装的一种定制。 不过，很多 Kubernetes 核心功能现在都用定制资源来实现，这使得 Kubernetes 更加模块化。
+> 自定义资源（Custom Resource） 是对 Kubernetes API 的扩展，不一定在默认的 Kubernetes 安装中就可用。自定义资源所代表的是对特定 Kubernetes 安装的一种定制。 不过，很多 Kubernetes 核心功能现在都用自定义资源来实现，这使得 Kubernetes 更加模块化。
+
+### 创建自定义资源
+#### 创建CustomResourceDefinition（CRD）
+首先我们需要编写一个 `CRD` 文件，顾名思义，CRD是 `ustomResource`的定义文件，它规定了要创建的自定义资源的各种属性。  
+
+```yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  # 名字必需与下面的 spec 字段匹配，并且格式为 '<名称的复数形式>.<组名>'
+  name: ufos.ufocontroller.chimission.io
+spec:
+  # 组名称，用于 REST API: /apis/<组>/<版本>
+  group: ufocontroller.chimission.io
+  # 列举此 CustomResourceDefinition 所支持的版本
+  versions:
+    - name: v1
+      # 每个版本都可以通过 served 标志来独立启用或禁止
+      served: true
+      # 其中一个且只有一个版本必需被标记为存储版本
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                deploymentName:
+                  type: string
+                replicas:
+                  type: integer
+                  minimum: 1
+                  maximum: 10
+            status:
+              type: object
+              properties:
+                availableReplicas:
+                  type: integer
+  # 可以是 Namespaced 或 Cluster
+  scope: Namespaced
+  names:
+    # 名称的复数形式，用于 URL：/apis/<组>/<版本>/<名称的复数形式>
+    plural: ufos
+    # 名称的单数形式，作为命令行使用时和显示时的别名
+    singular: ufo
+    # kind 通常是单数形式的帕斯卡编码（PascalCased）形式。你的资源清单会使用这一形式。
+    kind: Ufo
+    # shortNames 允许你在命令行使用较短的字符串来匹配资源
+    shortNames:
+    - uu
+```  
+这里我们定义了一个名字叫 `Ufo` 的资源类型 :-) ， 它有两个属性字段， `deploymentName`, `replicas`。后面我会用这个自定义资源来控制和 `deploymentName` 同名的 `deployment`，将其下的 `Pod` 数量调整到 `replicas` 指定数量。
+
+然后创建它：
+>kubectl apply -f resourcedefinition.yaml  
+
+这样一个新的受 `namespace` 约束的 RESTful API 端点会被创建：
+>/apis/ufocontroller.chimission.io/v1/namespaces/*/ufo/...
+
+此 URL 自此可以用来创建和管理定制对象。对象的 `kind` 将是来自你上面创建时 所用的 `spec` 中指定的 `Ufo`。
+创建端点的操作可能需要几秒钟。你可以监测你的 `CustomResourceDefinition` 的 `Established` 状况变为 `true`。
+
+看下结果： 
+
+![结果](https://images.chimission.cn/blog/get_ufo.png)  
+
+#### 创建CustomResource（CR）
+有了CRD之后就可以创建CR了
+
+TODO 
+

@@ -14,12 +14,12 @@ url: "/posts/k8s_custom_controller_1/"
  <!--more-->
 
 ### 资源是什么
-我们应该先明确一个概念，在 `k8s` 中 `资源` 是什么？ 尽管有很多人曾经编写过 `自定义资源`， 但是对于什么是`资源`并没有很清楚的认知。在[官网中](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)的定义  
+我们应该先明确一个概念，在 k8s 中 资源 是什么？ 尽管有很多人曾经编写过 自定义资源， 但是对于什么是 资源 并没有很清楚的认知。在[官网中](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)的定义  
 > A resource is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind; for example, the built-in pods resource contains a collection of Pod objects.  
 
 > 资源（Resource） 是 Kubernetes API 中的一个端点， 其中存储的是某个类别的 API 对象 的一个集合。 例如内置的 pods 资源包含一组 Pod 对象。 
 
-`k8s` 中的所有内容都被抽象为 `资源`，如 `Pod`、`Service`、`Node` 等都是资源。`对象` 是 `资源`的实例，是持久化的实体。如某个具体的 `Pod`、某个具体的 `Node`。`k8s` 使用这些实体去表示整个集群的状态。对象的创建、删除、修改都是通过  `Kubernetes API` ，也就是  `Api Server` 组件提供的 `API` 接口，这些是 `RESTful` 风格的 `Api`，与 `k8s` 的 `万物皆对象` 理念相符。命令行工具 `kubectl`，实际上也是调用 `kubernetes api`。`K8s` 中的资源类别有很多种，`kubectl` 可以通过配置文件来创建这些 `对象`，配置文件更像是描述对象 `属性` 的文件，配置文件格式可以是 `JSON` 或 `YAML`。
+k8s 中的所有内容都被抽象为 资源，如 Pod、Service、Node 等都是资源。对象 是 资源的实例，是持久化的实体。如某个具体的 Pod、某个具体的 Node。k8s 使用这些实体去表示整个集群的状态。对象的创建、删除、修改都是通过  Kubernetes API ，也就是  Api Server 组件提供的 API 接口，这些是 RESTful 风格的 Api，与 k8s 的 万物皆对象 理念相符。命令行工具 kubectl，实际上也是调用 kubernetes api。K8s 中的资源类别有很多种，kubectl 可以通过 apply命令通过配置文件来创建这些 对象，配置文件更像是描述对象 属性 的文件，配置文件格式可以是 JSON 或 YAML。
 
 ### 自定义资源是什么
 > A custom resource is an extension of the Kubernetes API that is not necessarily available in a default Kubernetes installation. It represents a customization of a particular Kubernetes installation. However, many core Kubernetes functions are now built using custom resources, making Kubernetes more modular.  
@@ -28,7 +28,7 @@ url: "/posts/k8s_custom_controller_1/"
 
 ### 创建自定义资源
 #### 创建CustomResourceDefinition（CRD）
-首先我们需要编写一个 `CRD` 文件，顾名思义，CRD是 `ustomResource`的定义文件，它规定了要创建的自定义资源的各种属性。  
+首先我们需要编写一个 CRD 文件，顾名思义，CRD是 CustomResource`的定义文件，它规定了要创建的自定义资源的各种属性。  
 
 ```yaml
 apiVersion: apiextensions.k8s.io/v1
@@ -77,23 +77,47 @@ spec:
     shortNames:
     - uu
 ```  
-这里我们定义了一个名字叫 `Ufo` 的资源类型 :-) ， 它有两个属性字段， `deploymentName`, `replicas`。后面我会用这个自定义资源来控制和 `deploymentName` 同名的 `deployment`，将其下的 `Pod` 数量调整到 `replicas` 指定数量。
+这里我们定义了一个名字叫 Ufo 的资源类型 :-) ，它是一个类型名字，相当于 class name，它有两个属性字段 deploymentName 和 replicas。后面我会用这个自定义资源来控制和 deploymentName 同名的 deployment，将其下的 Pod 数量调整到 replicas 指定数量。
 
-然后创建它：
+其他字段含义: 
+* group：设置API所属的组，将其映射为API URL中的“/apis/”下一级目录。它是逻辑上相关的Kinds集合
+* scope：该API的生效范围，可选项为 Namespaced 和 Cluster。
+* version：每个Group可以存在多个版本。例如，v1alpha1，然后升为v1beta1，最后稳定为v1版本。
+* names：CRD的名称，包括单数、复数、kind、所属组等名称定义
+
+在这个CRD中，我指定了group: ufocontroller.chimission.io，version: v1这样的API信息，也指定了这个CR的资源类型叫作Ufo，复数（plural）是 ufos。
+
+
+之后创建它：
 >kubectl apply -f resourcedefinition.yaml  
-
-这样一个新的受 `namespace` 约束的 RESTful API 端点会被创建：
->/apis/ufocontroller.chimission.io/v1/namespaces/*/ufo/...
-
-此 URL 自此可以用来创建和管理定制对象。对象的 `kind` 将是来自你上面创建时 所用的 `spec` 中指定的 `Ufo`。
-创建端点的操作可能需要几秒钟。你可以监测你的 `CustomResourceDefinition` 的 `Established` 状况变为 `true`。
 
 看下结果： 
 
 ![结果](https://images.chimission.cn/blog/get_ufo.png)  
 
+这样一个新的受 namespace 约束的 资源类型会被创建，接下来就可以创建类型为 Ufo的自定义资源了
+
 #### 创建CustomResource（CR）
 有了CRD之后就可以创建CR了
 
-TODO 
+```yaml
+apiVersion: ufocontroller.chimission.io/v1
+kind: Ufo
+metadata:
+  name: example-ufo
+spec:
+  deploymentName: example-ufo
+  replicas: 3
+```  
+deploymentName 和 replicas 就是上面我们在定义 CRD 时规定的字段，这个文件对应的 example-ufo 这个对象里有两个属性， deploymentName 和 replicas ，值分别是 example-ufo 和 3， 后面我们会用到这两个属性。
 
+然后我们运行:
+> k apply -f cr.yml  
+
+这里我们创建了一个 Ufo 对象，命名为 example-ufo， 
+
+看下结果：  
+
+![结果](https://images.chimission.cn/blog/examle-ufo.png)  
+
+很好， 一个完整的 CR 就被我们创建了出来。  

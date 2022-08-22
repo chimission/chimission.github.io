@@ -3,30 +3,39 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://notes.chimission.cn/archives/2022/</loc>
-    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
+    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
   </url><url>
-    <loc>https://notes.chimission.cn/archives/2022-07/</loc>
-    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
+    <loc>https://notes.chimission.cn/archives/2022-08/</loc>
+    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/archives/</loc>
+    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/</loc>
+    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/tags/k8s/</loc>
+    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/posts/</loc>
+    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/tags/</loc>
+    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/posts/k8s_custom_controller_1/</loc>
+    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/archives/2022-07/</loc>
     <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/categories/</loc>
     <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
-    <loc>https://notes.chimission.cn/</loc>
-    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
-  </url><url>
     <loc>https://notes.chimission.cn/categories/monitor/</loc>
     <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
-    <loc>https://notes.chimission.cn/posts/</loc>
-    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
-  </url><url>
     <loc>https://notes.chimission.cn/tags/prometheus/</loc>
-    <lastmod>2022-07-25T21:09:46+08:00</lastmod>
-  </url><url>
-    <loc>https://notes.chimission.cn/tags/</loc>
     <lastmod>2022-07-25T21:09:46+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/posts/cloud_native_monitor/</loc>
@@ -40,9 +49,6 @@
   </url><url>
     <loc>https://notes.chimission.cn/posts/tcp_handshake/</loc>
     <lastmod>2022-07-17T20:41:32+08:00</lastmod>
-  </url><url>
-    <loc>https://notes.chimission.cn/tags/k8s/</loc>
-    <lastmod>2022-07-04T17:59:07+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/categories/k8s/</loc>
     <lastmod>2022-07-04T17:59:07+08:00</lastmod>

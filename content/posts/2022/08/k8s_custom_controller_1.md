@@ -3,7 +3,7 @@ title: "如何在k8s中使用自定义资源（1）"
 date: 2022-08-04T17:58:17+08:00
 draft: false
 author: "chimission"
-categories: ["k8s"]
+categories: []
 tags: ["k8s"]
 archives: ['2022', '2022-08']
 comments: false
@@ -95,10 +95,10 @@ spec:
 
 ![结果](https://images.chimission.cn/blog/get_ufo.png)  
 
-这样一个新的受 namespace 约束的 资源类型会被创建，接下来就可以创建类型为 Ufo的自定义资源了
+这样一个新的受 namespace 约束的 资源类型会被创建，k8s 就可以认识 Ufo 这种类型的自定义资源了。
 
 #### 创建CustomResource（CR）
-有了CRD之后就可以创建CR了
+创建CRD之后我们就可以创建CR了
 
 ```yaml
 apiVersion: ufocontroller.chimission.io/v1
@@ -120,4 +120,4 @@ deploymentName 和 replicas 就是上面我们在定义 CRD 时规定的字段�
 
 ![结果](https://images.chimission.cn/blog/examle-ufo.png)  
 
-很好， 一个完整的 CR 就被我们创建了出来。  
+一个完整的 CR 就被我们创建了出来。但是仅仅只有一个CR对象并没有什么用，它仅仅是安静的躺在 etcd 中。接下来我们要做一些写代码的工作， 让这个 Ufo 动起来，做一些类似 deployment 这种对象的工作。

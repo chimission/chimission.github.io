@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+
+
+
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>如何在k8s中使用自定义资源（1） - Chimission&#39;s Notes</title>
+<meta name="description" content="">
+
+<meta name="author" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=a7810b124ced5aa3594a69c5933994bfc5cc9dc1">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=a7810b124ced5aa3594a69c5933994bfc5cc9dc1">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=a7810b124ced5aa3594a69c5933994bfc5cc9dc1">
+<link rel="alternate" href="/index.xml?c=a7810b124ced5aa3594a69c5933994bfc5cc9dc1" type="application/rss+xml" title="RSS" />
+<meta property="og:title" content="如何在k8s中使用自定义资源（1） - Chimission&#39;s Notes">
+</meta>
+<meta property="og:url" content="https://notes.chimission.cn/posts/k8s_custom_controller_1/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Chimission&#39;s Notes">
+<meta property="og:description" content="">
+
+<meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
+
+<meta name="twitter:card" content="summary_large_image" /></meta>
+<meta name="twitter:site" content="@"></meta>
+<meta name="twitter:creator" content="@"></meta>
+<meta name="twitter:title" content="如何在k8s中使用自定义资源（1） - Chimission&#39;s Notes"></meta>
+<meta name="twitter:url" content="https://notes.chimission.cn/posts/k8s_custom_controller_1/"></meta>
+<meta name="twitter:description" content=""></meta>
+
+<meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
+
+
+<link rel="stylesheet" href="/css/main.css?c=a7810b124ced5aa3594a69c5933994bfc5cc9dc1">
+<link rel="stylesheet" href="/css/color.css?c=a7810b124ced5aa3594a69c5933994bfc5cc9dc1">
+
+
+
+
+</head>
+
+<body class="theme-default">
+
+
+<div id="content-header" class="title">
+  
+  <a class="site-title" href="/">Chimission&#39;s Notes</a>
+  
+  <span class="site-sub-title"></span>
+
+  
+
+  <div id="main-menu-nav">
+    <div id="main-menu-nav-items">
+      
+        <div class="nav-item"><a href="/about/">About</a></div>
+      
+        <div class="nav-item"><a href="/tags/">Tags</a></div>
+      
+        <div class="nav-item"><a href="/categories/">Categories</a></div>
+      
+        <div class="nav-item"><a href="/archives/">Archives</a></div>
+      
+    </div>
+  </div>
+</div>
+<div id="content" class="main">
+
+
+
+
+<h2>如何在k8s中使用自定义资源（1）</h2>
+
+<span class="sub">2022-08-04</span>
+
+
+
+
+
+
+
+
+<blockquote>
+<p>文本是系列文章第一篇，讲述如何在k8s中使用自定义资源</p>
+</blockquote>
+<h3 id="资源是什么">资源是什么</h3>
+<p>我们应该先明确一个概念，在 k8s 中 资源 是什么？ 尽管有很多人曾经编写过 自定义资源， 但是对于什么是 资源 并没有很清楚的认知。在<a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/">官网中</a>的定义</p>
+<blockquote>
+<p>A resource is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind; for example, the built-in pods resource contains a collection of Pod objects.</p>
+</blockquote>
+<blockquote>
+<p>资源（Resource） 是 Kubernetes API 中的一个端点， 其中存储的是某个类别的 API 对象 的一个集合。 例如内置的 pods 资源包含一组 Pod 对象。</p>
+</blockquote>
+<p>k8s 中的所有内容都被抽象为 资源，如 Pod、Service、Node 等都是资源。对象 是 资源的实例，是持久化的实体。如某个具体的 Pod、某个具体的 Node。k8s 使用这些实体去表示整个集群的状态。对象的创建、删除、修改都是通过  Kubernetes API ，也就是  Api Server 组件提供的 API 接口，这些是 RESTful 风格的 Api，与 k8s 的 万物皆对象 理念相符。命令行工具 kubectl，实际上也是调用 kubernetes api。K8s 中的资源类别有很多种，kubectl 可以通过 apply命令通过配置文件来创建这些 对象，配置文件更像是描述对象 属性 的文件，配置文件格式可以是 JSON 或 YAML。</p>
+<h3 id="自定义资源是什么">自定义资源是什么</h3>
+<blockquote>
+<p>A custom resource is an extension of the Kubernetes API that is not necessarily available in a default Kubernetes installation. It represents a customization of a particular Kubernetes installation. However, many core Kubernetes functions are now built using custom resources, making Kubernetes more modular.</p>
+</blockquote>
+<blockquote>
+<p>自定义资源（Custom Resource） 是对 Kubernetes API 的扩展，不一定在默认的 Kubernetes 安装中就可用。自定义资源所代表的是对特定 Kubernetes 安装的一种定制。 不过，很多 Kubernetes 核心功能现在都用自定义资源来实现，这使得 Kubernetes 更加模块化。</p>
+</blockquote>
+<h3 id="创建自定义资源">创建自定义资源</h3>
+<h4 id="创建customresourcedefinitioncrd">创建CustomResourceDefinition（CRD）</h4>
+<p>首先我们需要编写一个 CRD 文件，顾名思义，CRD是 CustomResource`的定义文件，它规定了要创建的自定义资源的各种属性。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#309;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>apiextensions.k8s.io/v1<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">kind</span>:<span style="color:#bbb"> </span>CustomResourceDefinition<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">metadata</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic"># 名字必需与下面的 spec 字段匹配，并且格式为 &#39;&lt;名称的复数形式&gt;.&lt;组名&gt;&#39;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">name</span>:<span style="color:#bbb"> </span>ufos.ufocontroller.chimission.io<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic"># 组名称，用于 REST API: /apis/&lt;组&gt;/&lt;版本&gt;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">group</span>:<span style="color:#bbb"> </span>ufocontroller.chimission.io<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic"># 列举此 CustomResourceDefinition 所支持的版本</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">versions</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>- <span style="color:#309;font-weight:bold">name</span>:<span style="color:#bbb"> </span>v1<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#09f;font-style:italic"># 每个版本都可以通过 served 标志来独立启用或禁止</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#309;font-weight:bold">served</span>:<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">true</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#09f;font-style:italic"># 其中一个且只有一个版本必需被标记为存储版本</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#309;font-weight:bold">storage</span>:<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">true</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#309;font-weight:bold">schema</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#309;font-weight:bold">openAPIV3Schema</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">          </span><span style="color:#309;font-weight:bold">type</span>:<span style="color:#bbb"> </span>object<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">          </span><span style="color:#309;font-weight:bold">properties</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">            </span><span style="color:#309;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span><span style="color:#309;font-weight:bold">type</span>:<span style="color:#bbb"> </span>object<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span><span style="color:#309;font-weight:bold">properties</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">                </span><span style="color:#309;font-weight:bold">deploymentName</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">                  </span><span style="color:#309;font-weight:bold">type</span>:<span style="color:#bbb"> </span>string<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">                </span><span style="color:#309;font-weight:bold">replicas</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">                  </span><span style="color:#309;font-weight:bold">type</span>:<span style="color:#bbb"> </span>integer<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">                  </span><span style="color:#309;font-weight:bold">minimum</span>:<span style="color:#bbb"> </span><span style="color:#f60">1</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">                  </span><span style="color:#309;font-weight:bold">maximum</span>:<span style="color:#bbb"> </span><span style="color:#f60">10</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">            </span><span style="color:#309;font-weight:bold">status</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span><span style="color:#309;font-weight:bold">type</span>:<span style="color:#bbb"> </span>object<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span><span style="color:#309;font-weight:bold">properties</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">                </span><span style="color:#309;font-weight:bold">availableReplicas</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">                  </span><span style="color:#309;font-weight:bold">type</span>:<span style="color:#bbb"> </span>integer<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic"># 可以是 Namespaced 或 Cluster</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">scope</span>:<span style="color:#bbb"> </span>Namespaced<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">names</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic"># 名称的复数形式，用于 URL：/apis/&lt;组&gt;/&lt;版本&gt;/&lt;名称的复数形式&gt;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#309;font-weight:bold">plural</span>:<span style="color:#bbb"> </span>ufos<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic"># 名称的单数形式，作为命令行使用时和显示时的别名</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#309;font-weight:bold">singular</span>:<span style="color:#bbb"> </span>ufo<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic"># kind 通常是单数形式的帕斯卡编码（PascalCased）形式。你的资源清单会使用这一形式。</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#309;font-weight:bold">kind</span>:<span style="color:#bbb"> </span>Ufo<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic"># shortNames 允许你在命令行使用较短的字符串来匹配资源</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#309;font-weight:bold">shortNames</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>- uu<span style="color:#bbb">
+</span></span></span></code></pre></div><p>这里我们定义了一个名字叫 Ufo 的资源类型 :-) ，它是一个类型名字，相当于 class name，它有两个属性字段 deploymentName 和 replicas。后面我会用这个自定义资源来控制和 deploymentName 同名的 deployment，将其下的 Pod 数量调整到 replicas 指定数量。</p>
+<p>其他字段含义:</p>
+<ul>
+<li>group：设置API所属的组，将其映射为API URL中的“/apis/”下一级目录。它是逻辑上相关的Kinds集合</li>
+<li>scope：该API的生效范围，可选项为 Namespaced 和 Cluster。</li>
+<li>version：每个Group可以存在多个版本。例如，v1alpha1，然后升为v1beta1，最后稳定为v1版本。</li>
+<li>names：CRD的名称，包括单数、复数、kind、所属组等名称定义</li>
+</ul>
+<p>在这个CRD中，我指定了group: ufocontroller.chimission.io，version: v1这样的API信息，也指定了这个CR的资源类型叫作Ufo，复数（plural）是 ufos。</p>
+<p>之后创建它：</p>
+<blockquote>
+<p>kubectl apply -f resourcedefinition.yaml</p>
+</blockquote>
+<p>看下结果：</p>
+<p><img src="https://images.chimission.cn/blog/get_ufo.png" alt="结果"></p>
+<p>这样一个新的受 namespace 约束的 资源类型会被创建，k8s 就可以认识 Ufo 这种类型的自定义资源了。</p>
+<h4 id="创建customresourcecr">创建CustomResource（CR）</h4>
+<p>创建CRD之后我们就可以创建CR了</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#309;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>ufocontroller.chimission.io/v1<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">kind</span>:<span style="color:#bbb"> </span>Ufo<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">metadata</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">name</span>:<span style="color:#bbb"> </span>example-ufo<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">deploymentName</span>:<span style="color:#bbb"> </span>example-ufo<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">replicas</span>:<span style="color:#bbb"> </span><span style="color:#f60">3</span><span style="color:#bbb">
+</span></span></span></code></pre></div><p>deploymentName 和 replicas 就是上面我们在定义 CRD 时规定的字段，这个文件对应的 example-ufo 这个对象里有两个属性， deploymentName 和 replicas ，值分别是 example-ufo 和 3， 后面我们会用到这两个属性。</p>
+<p>然后我们运行:</p>
+<blockquote>
+<p>k apply -f cr.yml</p>
+</blockquote>
+<p>这里我们创建了一个 Ufo 对象，命名为 example-ufo，</p>
+<p>看下结果：</p>
+<p><img src="https://images.chimission.cn/blog/examle-ufo.png" alt="结果"></p>
+<p>一个完整的 CR 就被我们创建了出来。但是仅仅只有一个CR对象并没有什么用，它仅仅是安静的躺在 etcd 中。接下来我们要做一些写代码的工作， 让这个 Ufo 动起来，做一些类似 deployment 这种对象的工作。</p>
+
+
+
+
+
+<hr class="block-separater">
+
+
+
+
+<div class="content-footer-item">
+	Tags for this post:
+	
+	<a class="post-tag" href="/tags/k8s/">k8s</a>
+	
+</div>
+
+
+
+
+
+
+
+<div class="content-footer-item neighbor">
+	
+	<div class="prev-post">Prev: <a href="/posts/cloud_native_monitor/">通过钉钉机器人自动化报警运维</a></div>
+	
+	
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    <div class="related-tag-category-list">
+        <h4>Other posts tagged by "k8s"</h3>
+        <ul class="post-list">
+          
+          <li class="post-item">
+  <div class="post-date sub">2022-08-04</div>
+  <div class="post-title"><a href="/posts/k8s_custom_controller_1/">如何在k8s中使用自定义资源（1）</a></div>
+  
+</li>
+          
+          <li class="post-item">
+  <div class="post-date sub">2022-07-04</div>
+  <div class="post-title"><a href="/posts/k8s_create_pod/">聊一聊 输入 kubectl apply 时，k8s在背后做了什么</a></div>
+  
+</li>
+          
+        </ul>
+        <div class="more-area">
+          
+          <a class="more" href="/tags/">other tags</a>
+          
+      </div>
+        </div>
+    
+
+
+
+
+<script src="/js/single.js"></script>
+
+
+	</div><div id="content-footer" class="sub">
+  Copyright © 2022, Chimission; all rights reserved.
+  <div class="credit">
+    Power by <a href="https://gohugo.io">Hugo</a> /
+    Theme <a href="https://github.com/michimani/simplog/">simplog</a> by <a href="https://github.com/michimani/">michimani</a>
+  </div>
+</div></body>
+
+</html>

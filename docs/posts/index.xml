@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
-    <lastBuildDate>Mon, 25 Jul 2022 21:09:46 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 04 Aug 2022 17:58:17 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何在k8s中使用自定义资源（1）</title>
+      <link>https://notes.chimission.cn/posts/k8s_custom_controller_1/</link>
+      <pubDate>Thu, 04 Aug 2022 17:58:17 +0800</pubDate>
+      
+      <guid>https://notes.chimission.cn/posts/k8s_custom_controller_1/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;文本是系列文章第一篇，讲述如何在k8s中使用自定义资源&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
     <item>
       <title>通过钉钉机器人自动化报警运维</title>
       <link>https://notes.chimission.cn/posts/cloud_native_monitor/</link>

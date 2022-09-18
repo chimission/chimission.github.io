@@ -3,24 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://notes.chimission.cn/archives/2022/</loc>
-    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+    <lastmod>2022-09-18T09:59:55+08:00</lastmod>
   </url><url>
-    <loc>https://notes.chimission.cn/archives/2022-08/</loc>
-    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+    <loc>https://notes.chimission.cn/archives/2022-09/</loc>
+    <lastmod>2022-09-18T09:59:55+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/archives/</loc>
-    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+    <lastmod>2022-09-18T09:59:55+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/</loc>
-    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+    <lastmod>2022-09-18T09:59:55+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/tags/k8s/</loc>
-    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+    <lastmod>2022-09-18T09:59:55+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/posts/</loc>
-    <lastmod>2022-08-04T17:58:17+08:00</lastmod>
+    <lastmod>2022-09-18T09:59:55+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/tags/</loc>
+    <lastmod>2022-09-18T09:59:55+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/posts/k8s_custom_controller_2/</loc>
+    <lastmod>2022-09-18T09:59:55+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/archives/2022-08/</loc>
     <lastmod>2022-08-04T17:58:17+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/posts/k8s_custom_controller_1/</loc>

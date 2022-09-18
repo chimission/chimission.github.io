@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2022-09 on Chimission&#39;s Notes</title>
+    <link>https://notes.chimission.cn/archives/2022-09/</link>
+    <description>Recent content in 2022-09 on Chimission&#39;s Notes</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
+    <lastBuildDate>Sun, 18 Sep 2022 09:59:55 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/archives/2022-09/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何在k8s中使用自定义资源（2）原理</title>
+      <link>https://notes.chimission.cn/posts/k8s_custom_controller_2/</link>
+      <pubDate>Sun, 18 Sep 2022 09:59:55 +0800</pubDate>
+      
+      <guid>https://notes.chimission.cn/posts/k8s_custom_controller_2/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;文本是系列文章第二篇，讲述如何在k8s中使用自定义资源&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

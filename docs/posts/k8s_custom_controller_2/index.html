@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+
+
+
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>如何在k8s中使用自定义资源（2）原理 - Chimission&#39;s Notes</title>
+<meta name="description" content="">
+
+<meta name="author" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=cdf8936660c85aa767a0ac5d74adf0bf996a70d5">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=cdf8936660c85aa767a0ac5d74adf0bf996a70d5">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=cdf8936660c85aa767a0ac5d74adf0bf996a70d5">
+<link rel="alternate" href="/index.xml?c=cdf8936660c85aa767a0ac5d74adf0bf996a70d5" type="application/rss+xml" title="RSS" />
+<meta property="og:title" content="如何在k8s中使用自定义资源（2）原理 - Chimission&#39;s Notes">
+</meta>
+<meta property="og:url" content="https://notes.chimission.cn/posts/k8s_custom_controller_2/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Chimission&#39;s Notes">
+<meta property="og:description" content="">
+
+<meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
+
+<meta name="twitter:card" content="summary_large_image" /></meta>
+<meta name="twitter:site" content="@"></meta>
+<meta name="twitter:creator" content="@"></meta>
+<meta name="twitter:title" content="如何在k8s中使用自定义资源（2）原理 - Chimission&#39;s Notes"></meta>
+<meta name="twitter:url" content="https://notes.chimission.cn/posts/k8s_custom_controller_2/"></meta>
+<meta name="twitter:description" content=""></meta>
+
+<meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
+
+
+<link rel="stylesheet" href="/css/main.css?c=cdf8936660c85aa767a0ac5d74adf0bf996a70d5">
+<link rel="stylesheet" href="/css/color.css?c=cdf8936660c85aa767a0ac5d74adf0bf996a70d5">
+
+
+
+
+</head>
+
+<body class="theme-default">
+
+
+<div id="content-header" class="title">
+  
+  <a class="site-title" href="/">Chimission&#39;s Notes</a>
+  
+  <span class="site-sub-title"></span>
+
+  
+
+  <div id="main-menu-nav">
+    <div id="main-menu-nav-items">
+      
+        <div class="nav-item"><a href="/about/">About</a></div>
+      
+        <div class="nav-item"><a href="/tags/">Tags</a></div>
+      
+        <div class="nav-item"><a href="/categories/">Categories</a></div>
+      
+        <div class="nav-item"><a href="/archives/">Archives</a></div>
+      
+    </div>
+  </div>
+</div>
+<div id="content" class="main">
+
+
+
+
+<h2>如何在k8s中使用自定义资源（2）原理</h2>
+
+<span class="sub">2022-09-18</span>
+
+
+
+
+
+
+
+
+<blockquote>
+<p>文本是系列文章第二篇，讲述如何在k8s中使用自定义资源</p>
+</blockquote>
+<p>上一篇中我们创建了一个 CRD 和与之对应的 CR，但是只创建对象并没有什么用，还需要写一个 controller 来控制自定义资源的逻辑。k8s 已经内置了很多个 controller，由 controller-manager这个组件统一管理，例如 pod-controller，在我们向 k8s 提交一个pod对象的信息后，pod-controller 就会察觉到这一动作的发生，进而检查提交的 pod 的期望状态和 pod 的实际状态符不符合， 如果不符合就会调整到期望状态。</p>
+<h3 id="k8s架构">k8s架构</h3>
+<p><img src="https://images.chimission.cn/blog/k8s_jiagou.png" alt="架构图"></p>
+<p>在正式编写控制器之前让我们简单过一下 k8s 的控制器原理 ,这里我们主要关心 master 上的 controller-manager 组件和 apiserver组件， 它位于上图右侧主控节点。  apiserver 是整个集群统一入口，提供了http RESTFUl api 的方式，所有其他组件都通过 apiserver 进行交互。<br>
+controller-manager 负责管理一系列的具体的 controller， 例如内置的 pod-controller，deployment-controller，job-controller等等，基本上在 k8s 中每一个内置的 wokeload 都会有一个相对应的 controller，用来管理自身的状态。</p>
+<h3 id="通信过程-精简版">通信过程 精简版</h3>
+<p>首先让我们从整体上看下 controller 是如何从 k8s 那里获取关心的对象信息的</p>
+<p><img src="https://images.chimission.cn/blog/%E7%B2%BE%E7%AE%80%E7%89%88.png" alt="精简版"></p>
+<p>首先左上角 k8s 讲集群中的对象信息序列化保存到 etcd 中，然后是 右边的 apiserver。<br>
+上面我们提到过 apiserver 是整个集群统一入口，提供了http RESTFUl api 的方式，所有其他组件都通过 apiserver 进行交互，不例外的，所有 controller 都要和 apiserver 通信， 然后由 apiserver 去 etcd 中才可以获取到内部对象信息。
+可以看到， controller 和 apiserver 中间隔着 clinet-go， client-go 是 controller-manager 的组件，最初集成在代码里，后来被抽出来作为单独的sdk，给用户自定义controller提供统一的api，使得用户自定义controller和系统提供的 controller（ Deployment Controller等等）实现方式基本一致。简单来说，clinet-go 就是官方抽象出来的标准工具包，集成了许多实现好的功能， 方便用户编写自己的自定义 controller。后续在写代码时会使用到它。</p>
+<h3 id="通信过程-详细版">通信过程 详细版</h3>
+<p><img src="https://images.chimission.cn/blog/%E8%AF%A6%E7%BB%86%E7%89%88.jpeg" alt="详细版"></p>
+<p>蓝色的是 client-go 已经提供好的功能，黄色的是用户需要自己写代码实现的地方。</p>
+<h4 id="informer">informer</h4>
+<p>client-go 中的 api-server，负责各组件的数据传递， 和用户代码和client-go代码的连接</p>
+<h4 id="reflector">reflector</h4>
+<p>Reflector 用于监控（Watch）指定的 Kubernetes 资源，当监控的资源发生变化时，触发相应的变更事件，例如 Add 事件、Update 事件、Delete 事件，并将其资源对象存放到本地缓存 DeltaFIFO 中。</p>
+<h4 id="deltafifo">DeltaFIFO</h4>
+<p>DeltaFIFO 是一个生产者-消费者的队列，生产者是 Reflector，消费者是 Pop 函数，FIFO 是一个先进先出的队列，而 Delta 是一个资源对象存储，它可以保存资源对象的操作类型，例如 Add 操作类型、Update 操作类型、Delete 操作类型、Sync 操作类型等。</p>
+<h4 id="indexer">Indexer</h4>
+<p>Indexer 是 client-go 用来存储资源对象并自带索引功能的本地存储，Reflector 从 DeltaFIFO 中将消费出来的资源对象存储至 Indexer。Indexer 与 Etcd 集群中的数据保持完全一致。这样我们就可以很方便地从本地存储中读取相应的资源对象数据，而无须每次从远程 APIServer 中读取，以减轻服务器的压力。【几乎所有的controller都是通过本地缓存查询对象状态的】</p>
+<h4 id="resourceeventhandlers">ResourceEventHandlers</h4>
+<p>自己向client-go注册的回调函数，在命令式编程里，add、update、delete的回调函数基本一致，就是向 workqueue 队列里推入一个被操作对象的元素</p>
+<h4 id="workqueue">workqueue</h4>
+<p>自己实现的队列， 功能和 DeltaFIFO 类似，用来保存事件对象，使用队列是为了防止自己写的代码处理速度跟不上client-go的发送速度，导致client-go卡顿。</p>
+<h4 id="processitemhandle-object">Processitem/Handle Object</h4>
+<p>真正的自定义控制器的逻辑就在写在这里，命令式编程一般会从 workqueue 中读取对象key， 然后根据key从  Indexer 的cache 里获得被操作对象的状态， 对比时期状态和期望状态，不一样就改成一样的。</p>
+<p>这里理论知识比较多，直接去查看源码显得有一定困难，我们可以用一个实际的示例来进行说明，比如现在我们删除一个 Pod，一个 Informer的执行流程是怎样的：</p>
+<ol>
+<li>
+<p>首先初始化 Informer，Reflector 通过 List 接口获取所有的 Pod 对象</p>
+</li>
+<li>
+<p>Reflector 拿到所有 Pod 后，将全部 Pod 放到 Store（本地缓存）中</p>
+</li>
+<li>
+<p>如果有人调用 Lister 的 List/Get 方法获取 Pod，那么 Lister 直接从 Store 中去拿数据</p>
+</li>
+<li>
+<p>Informer 初始化完成后，Reflector 开始 Watch Pod 相关的事件</p>
+</li>
+<li>
+<p>此时如果我们删除 Pod1，那么 Reflector 会监听到这个事件，然后将这个事件发送到 DeltaFIFO 中</p>
+</li>
+<li>
+<p>DeltaFIFO 首先先将这个事件存储在一个队列中，然后去操作 Store 中的数据，删除其中的 Pod1</p>
+</li>
+<li>
+<p>DeltaFIFO 然后 Pop 这个事件到事件处理器（资源事件处理器）中进行处理</p>
+</li>
+<li>
+<p>LocalStore 会周期性地把所有的 Pod 信息重新放回 DeltaFIFO 中去</p>
+</li>
+</ol>
+<h3 id="结语">结语</h3>
+<p>本文主要介绍了k8s 自定义controller的一些理论概念， 下一篇中我们会用go 实战编写一个controller来控制上一篇的CRD。</p>
+
+
+
+
+
+<hr class="block-separater">
+
+
+
+
+<div class="content-footer-item">
+	Tags for this post:
+	
+	<a class="post-tag" href="/tags/k8s/">k8s</a>
+	
+</div>
+
+
+
+
+
+
+
+<div class="content-footer-item neighbor">
+	
+	<div class="prev-post">Prev: <a href="/posts/k8s_custom_controller_1/">如何在k8s中使用自定义资源（1）概念</a></div>
+	
+	
+</div>
+
+
+
+
+
+
+    
+    
+    
+
+
+
+
+
+
+    
+    
+    
+    <div class="related-tag-category-list">
+        <h4>Other posts tagged by "k8s"</h3>
+        <ul class="post-list">
+          
+          <li class="post-item">
+  <div class="post-date sub">2022-09-18</div>
+  <div class="post-title"><a href="/posts/k8s_custom_controller_2/">如何在k8s中使用自定义资源（2）原理</a></div>
+  
+</li>
+          
+          <li class="post-item">
+  <div class="post-date sub">2022-08-04</div>
+  <div class="post-title"><a href="/posts/k8s_custom_controller_1/">如何在k8s中使用自定义资源（1）概念</a></div>
+  
+</li>
+          
+          <li class="post-item">
+  <div class="post-date sub">2022-07-04</div>
+  <div class="post-title"><a href="/posts/k8s_create_pod/">聊一聊 输入 kubectl apply 时，k8s在背后做了什么</a></div>
+  
+</li>
+          
+        </ul>
+        <div class="more-area">
+          
+          <a class="more" href="/tags/">other tags</a>
+          
+      </div>
+        </div>
+    
+
+
+
+
+<script src="/js/single.js"></script>
+
+
+	</div><div id="content-footer" class="sub">
+  Copyright © 2022, Chimission; all rights reserved.
+  <div class="credit">
+    Power by <a href="https://gohugo.io">Hugo</a> /
+    Theme <a href="https://github.com/michimani/simplog/">simplog</a> by <a href="https://github.com/michimani/">michimani</a>
+  </div>
+</div></body>
+
+</html>

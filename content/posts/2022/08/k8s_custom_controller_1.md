@@ -1,5 +1,5 @@
 ---
-title: "如何在k8s中使用自定义资源（1）"
+title: "如何在k8s中使用自定义资源（1）概念"
 date: 2022-08-04T17:58:17+08:00
 draft: false
 author: "chimission"

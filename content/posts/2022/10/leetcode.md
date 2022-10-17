@@ -10,6 +10,8 @@ comments: false
 description: ""
 url: "/posts/leetcode/"
 ---
+>做题的一些笔记
+ <!--more-->
 ### [1.两数之和](https://leetcode.cn/problems/valid-parentheses/)
 求数组内两个元素特定和的下标， 刚开始我用两个 for 循环做，n平方时间复杂度。  
 涉及到查找和计算两个方面就可以考虑使用 hashmap 优化，可以降低时间复杂度到n。  

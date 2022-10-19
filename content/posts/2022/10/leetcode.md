@@ -121,3 +121,29 @@ func sortedSquares(nums []int) []int {
 
 }
 ```
+
+### [209.长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/submissions/)
+首先最容想到的暴力双循环，但是人家不让这么做，最后一个用例数组很长会超时。
+```go
+func minSubArrayLen(target int, nums []int) int {
+	l := len(nums)
+	min_length := 0
+	for first := 0; first < l; first++ {
+		r := 0
+		for secend := first; secend < l; {
+			r += nums[secend]
+			
+			if r >= target {
+				if (min_length == 0) || (secend-first+1 < min_length) {
+					min_length = secend - first + 1
+				}
+                break
+			} else if r < target {
+				secend++
+			}
+		}
+
+	}
+	return min_length
+}
+```

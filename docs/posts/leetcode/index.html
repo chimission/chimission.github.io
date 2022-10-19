@@ -14,10 +14,10 @@
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=09466e800855aafd039b1804fdeecf82fd4392a2">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=09466e800855aafd039b1804fdeecf82fd4392a2">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=09466e800855aafd039b1804fdeecf82fd4392a2">
-<link rel="alternate" href="/index.xml?c=09466e800855aafd039b1804fdeecf82fd4392a2" type="application/rss+xml" title="RSS" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=69cfd4595473a47c8a21412ecafa2a6cfef82103">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=69cfd4595473a47c8a21412ecafa2a6cfef82103">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=69cfd4595473a47c8a21412ecafa2a6cfef82103">
+<link rel="alternate" href="/index.xml?c=69cfd4595473a47c8a21412ecafa2a6cfef82103" type="application/rss+xml" title="RSS" />
 <meta property="og:title" content="Leetcode 笔记 - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/leetcode/">
@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=09466e800855aafd039b1804fdeecf82fd4392a2">
-<link rel="stylesheet" href="/css/color.css?c=09466e800855aafd039b1804fdeecf82fd4392a2">
+<link rel="stylesheet" href="/css/main.css?c=69cfd4595473a47c8a21412ecafa2a6cfef82103">
+<link rel="stylesheet" href="/css/color.css?c=69cfd4595473a47c8a21412ecafa2a6cfef82103">
 
 
 
@@ -183,6 +183,29 @@
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">return</span> r
 </span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="209长度最小的子数组httpsleetcodecnproblemsminimum-size-subarray-sumsubmissions"><a href="https://leetcode.cn/problems/minimum-size-subarray-sum/submissions/">209.长度最小的子数组</a></h3>
+<p>首先最容想到的暴力双循环，但是人家不让这么做，最后一个用例数组很长会超时。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">minSubArrayLen</span>(target <span style="color:#078;font-weight:bold">int</span>, nums []<span style="color:#078;font-weight:bold">int</span>) <span style="color:#078;font-weight:bold">int</span> {
+</span></span><span style="display:flex;"><span>	l <span style="color:#555">:=</span> <span style="color:#366">len</span>(nums)
+</span></span><span style="display:flex;"><span>	min_length <span style="color:#555">:=</span> <span style="color:#f60">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">for</span> first <span style="color:#555">:=</span> <span style="color:#f60">0</span>; first &lt; l; first<span style="color:#555">++</span> {
+</span></span><span style="display:flex;"><span>		r <span style="color:#555">:=</span> <span style="color:#f60">0</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">for</span> secend <span style="color:#555">:=</span> first; secend &lt; l; {
+</span></span><span style="display:flex;"><span>			r <span style="color:#555">+=</span> nums[secend]
+</span></span><span style="display:flex;"><span>			
+</span></span><span style="display:flex;"><span>			<span style="color:#069;font-weight:bold">if</span> r <span style="color:#555">&gt;=</span> target {
+</span></span><span style="display:flex;"><span>				<span style="color:#069;font-weight:bold">if</span> (min_length <span style="color:#555">==</span> <span style="color:#f60">0</span>) <span style="color:#555">||</span> (secend<span style="color:#555">-</span>first<span style="color:#555">+</span><span style="color:#f60">1</span> &lt; min_length) {
+</span></span><span style="display:flex;"><span>					min_length = secend <span style="color:#555">-</span> first <span style="color:#555">+</span> <span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>                <span style="color:#069;font-weight:bold">break</span>
+</span></span><span style="display:flex;"><span>			} <span style="color:#069;font-weight:bold">else</span> <span style="color:#069;font-weight:bold">if</span> r &lt; target {
+</span></span><span style="display:flex;"><span>				secend<span style="color:#555">++</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">return</span> min_length
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div>
 

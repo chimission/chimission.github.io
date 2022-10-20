@@ -146,4 +146,26 @@ func minSubArrayLen(target int, nums []int) int {
 	}
 	return min_length
 }
+```  
+后来看了题解，用了`滑动窗口`的方法，其实也是双指针的变种，双循环是指定窗口头位置开始，双指针是从窗口尾位置开始，相当于跳过了很多双循环重复的结果，可以将 O(n2) 优化成 O(n)  
+```go
+func minSubArrayLen(target int, nums []int) int {
+	min_length := len(nums) + 1
+	sum := 0
+	for first, second := 0, 0; first < len(nums); {
+		sum += nums[first]
+		for sum >= target {
+			if first-second+1 < min_length {
+				min_length = first - second + 1
+			}
+			sum -= nums[second]
+			second++
+		}
+		first++
+	}
+	if min_length == len(nums)+1 {
+		return 0
+	}
+	return min_length
+}
 ```

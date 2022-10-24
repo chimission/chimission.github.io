@@ -168,4 +168,44 @@ func minSubArrayLen(target int, nums []int) int {
 	}
 	return min_length
 }
+```  
+
+### [59.螺旋矩阵 II](https://leetcode.cn/problems/spiral-matrix-ii/) 
+这道题也没什么好说的，主要考察编码能力和边界处理，需要注意的四个循环条件要保持一致，每次循环的元素个数也一样，不要出现横着生成4个元素，竖着生成3个元素的情况，出现这种情况循环判断一定是有问题的。
+```go
+func generateMatrix(n int) [][]int {
+	total := n * n
+	current_nums := 1
+	hs, he := 0, n-1
+	ss, se := 0, n-1
+
+	matrix := make([][]int, n)
+	for i := 0; i < n; i++ {
+		matrix[i] = make([]int, n)
+	}
+	for current_nums <= total {
+
+		for i := hs; i <= he; i++ {
+			matrix[ss][i] = current_nums
+			current_nums++
+		}
+		ss++
+		for i := ss; i <= se; i++ {
+			matrix[i][he] = current_nums
+			current_nums++
+		}
+		he--
+		for i := he; i >= hs; i-- {
+			matrix[se][i] = current_nums
+			current_nums++
+		}
+		se--
+		for i := se; i >= ss; i-- {
+			matrix[i][hs] = current_nums
+			current_nums++
+		}
+		hs++
+	}
+	return matrix
+}
 ```

@@ -53,4 +53,99 @@ url: "/posts/leetcode_link/"
 	}
 	return head
 }
- ```
+ ```  
+
+### [707. 设计链表](https://leetcode.cn/problems/design-linked-list/submissions/)  
+虽然题目标记是中等难度， 但是不太涉及算法技巧，真正考验写代码的能力，设计一个链表的crud。有些方法思维很简单，但是落实到代码上就不是那么回事了，涉及到各种边界的判断。最后还行，看提交记录19年用py3通过了，这次用Go再通过一次。:-)  
+```go
+type LinkedNode struct {
+	Val  int
+	Next *LinkedNode
+}
+
+type MyLinkedList struct {
+	heade *LinkedNode
+}
+
+func Constructor() MyLinkedList {
+	return *new(MyLinkedList)
+
+}
+
+func (this *MyLinkedList) Get(index int) int {
+
+	t := this.heade
+	currentIndex := 0
+	for t != nil {
+		if currentIndex == index {
+			return t.Val
+		}
+		currentIndex += 1
+		t = t.Next
+
+	}
+	return -1
+
+}
+
+func (this *MyLinkedList) AddAtHead(val int) {
+	t := this.heade
+	this.heade = &LinkedNode{Val: val, Next: t}
+}
+
+func (this *MyLinkedList) AddAtTail(val int) {
+	t := this.heade
+    if this.heade == nil {
+		this.AddAtHead(val)
+		return
+	}
+	for t.Next != nil {
+		t = t.Next
+	}
+	t.Next = &LinkedNode{Val: val, Next: nil}
+}
+
+func (this *MyLinkedList) AddAtIndex(index int, val int) {
+	if index <= 0 {
+		this.AddAtHead(val)
+	}
+	t := this.heade
+	currentIndex := 0
+	for t != nil {
+		if currentIndex == index-1 {
+			pre := t.Next
+			t.Next = &LinkedNode{Val: val, Next: pre}
+		}
+		currentIndex += 1
+		t = t.Next
+	}
+
+}
+
+func (this *MyLinkedList) DeleteAtIndex(index int) {
+	if index == 0 {
+		this.heade = this.heade.Next
+		return
+	}
+	t := this.heade
+	currentIndex := 0
+	for t.Next != nil {
+		if currentIndex == index-1 {
+			t.Next = t.Next.Next
+			return
+		}
+		currentIndex += 1
+		t = t.Next
+	}
+
+}
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * obj := Constructor();
+ * param_1 := obj.Get(index);
+ * obj.AddAtHead(val);
+ * obj.AddAtTail(val);
+ * obj.AddAtIndex(index,val);
+ * obj.DeleteAtIndex(index);
+ */
+```

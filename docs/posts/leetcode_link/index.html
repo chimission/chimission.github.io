@@ -14,10 +14,10 @@
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=09b8dd6241107efaf92a254022ba8b338497c843">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=09b8dd6241107efaf92a254022ba8b338497c843">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=09b8dd6241107efaf92a254022ba8b338497c843">
-<link rel="alternate" href="/index.xml?c=09b8dd6241107efaf92a254022ba8b338497c843" type="application/rss+xml" title="RSS" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=5762e3a03c91dd829ae82fc9c1050e1152d14152">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=5762e3a03c91dd829ae82fc9c1050e1152d14152">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=5762e3a03c91dd829ae82fc9c1050e1152d14152">
+<link rel="alternate" href="/index.xml?c=5762e3a03c91dd829ae82fc9c1050e1152d14152" type="application/rss+xml" title="RSS" />
 <meta property="og:title" content="Leetcode 链表篇 - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/leetcode_link/">
@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=09b8dd6241107efaf92a254022ba8b338497c843">
-<link rel="stylesheet" href="/css/color.css?c=09b8dd6241107efaf92a254022ba8b338497c843">
+<link rel="stylesheet" href="/css/main.css?c=5762e3a03c91dd829ae82fc9c1050e1152d14152">
+<link rel="stylesheet" href="/css/color.css?c=5762e3a03c91dd829ae82fc9c1050e1152d14152">
 
 
 
@@ -127,6 +127,98 @@
 </span></span><span style="display:flex;"><span>   }
 </span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">return</span> head
 </span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="707-设计链表httpsleetcodecnproblemsdesign-linked-listsubmissions"><a href="https://leetcode.cn/problems/design-linked-list/submissions/">707. 设计链表</a></h3>
+<p>虽然题目标记是中等难度， 但是不太涉及算法技巧，真正考验写代码的能力，设计一个链表的crud。有些方法思维很简单，但是落实到代码上就不是那么回事了，涉及到各种边界的判断。最后还行，看提交记录19年用py3通过了，这次用Go再通过一次。:-)</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">type</span> LinkedNode <span style="color:#069;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>	Val  <span style="color:#078;font-weight:bold">int</span>
+</span></span><span style="display:flex;"><span>	Next <span style="color:#555">*</span>LinkedNode
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">type</span> MyLinkedList <span style="color:#069;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>	heade <span style="color:#555">*</span>LinkedNode
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Constructor</span>() MyLinkedList {
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">return</span> <span style="color:#555">*</span><span style="color:#366">new</span>(MyLinkedList)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> (this <span style="color:#555">*</span>MyLinkedList) <span style="color:#c0f">Get</span>(index <span style="color:#078;font-weight:bold">int</span>) <span style="color:#078;font-weight:bold">int</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	t <span style="color:#555">:=</span> this.heade
+</span></span><span style="display:flex;"><span>	currentIndex <span style="color:#555">:=</span> <span style="color:#f60">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">for</span> t <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">if</span> currentIndex <span style="color:#555">==</span> index {
+</span></span><span style="display:flex;"><span>			<span style="color:#069;font-weight:bold">return</span> t.Val
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		currentIndex <span style="color:#555">+=</span> <span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>		t = t.Next
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">return</span> <span style="color:#555">-</span><span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> (this <span style="color:#555">*</span>MyLinkedList) <span style="color:#c0f">AddAtHead</span>(val <span style="color:#078;font-weight:bold">int</span>) {
+</span></span><span style="display:flex;"><span>	t <span style="color:#555">:=</span> this.heade
+</span></span><span style="display:flex;"><span>	this.heade = <span style="color:#555">&amp;</span>LinkedNode{Val: val, Next: t}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> (this <span style="color:#555">*</span>MyLinkedList) <span style="color:#c0f">AddAtTail</span>(val <span style="color:#078;font-weight:bold">int</span>) {
+</span></span><span style="display:flex;"><span>	t <span style="color:#555">:=</span> this.heade
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">if</span> this.heade <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		this.<span style="color:#c0f">AddAtHead</span>(val)
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">for</span> t.Next <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		t = t.Next
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	t.Next = <span style="color:#555">&amp;</span>LinkedNode{Val: val, Next: <span style="color:#069;font-weight:bold">nil</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> (this <span style="color:#555">*</span>MyLinkedList) <span style="color:#c0f">AddAtIndex</span>(index <span style="color:#078;font-weight:bold">int</span>, val <span style="color:#078;font-weight:bold">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">if</span> index <span style="color:#555">&lt;=</span> <span style="color:#f60">0</span> {
+</span></span><span style="display:flex;"><span>		this.<span style="color:#c0f">AddAtHead</span>(val)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	t <span style="color:#555">:=</span> this.heade
+</span></span><span style="display:flex;"><span>	currentIndex <span style="color:#555">:=</span> <span style="color:#f60">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">for</span> t <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">if</span> currentIndex <span style="color:#555">==</span> index<span style="color:#555">-</span><span style="color:#f60">1</span> {
+</span></span><span style="display:flex;"><span>			pre <span style="color:#555">:=</span> t.Next
+</span></span><span style="display:flex;"><span>			t.Next = <span style="color:#555">&amp;</span>LinkedNode{Val: val, Next: pre}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		currentIndex <span style="color:#555">+=</span> <span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>		t = t.Next
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> (this <span style="color:#555">*</span>MyLinkedList) <span style="color:#c0f">DeleteAtIndex</span>(index <span style="color:#078;font-weight:bold">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">if</span> index <span style="color:#555">==</span> <span style="color:#f60">0</span> {
+</span></span><span style="display:flex;"><span>		this.heade = this.heade.Next
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	t <span style="color:#555">:=</span> this.heade
+</span></span><span style="display:flex;"><span>	currentIndex <span style="color:#555">:=</span> <span style="color:#f60">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">for</span> t.Next <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">if</span> currentIndex <span style="color:#555">==</span> index<span style="color:#555">-</span><span style="color:#f60">1</span> {
+</span></span><span style="display:flex;"><span>			t.Next = t.Next.Next
+</span></span><span style="display:flex;"><span>			<span style="color:#069;font-weight:bold">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		currentIndex <span style="color:#555">+=</span> <span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>		t = t.Next
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * Your MyLinkedList object will be instantiated and called as such:
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * obj := Constructor();
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * param_1 := obj.Get(index);
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * obj.AddAtHead(val);
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * obj.AddAtTail(val);
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * obj.AddAtIndex(index,val);
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * obj.DeleteAtIndex(index);
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> */</span>
 </span></span></code></pre></div>
 
 

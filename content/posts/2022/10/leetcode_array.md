@@ -1,5 +1,5 @@
 ---
-title: "Leetcode 笔记"
+title: "Leetcode 数组篇"
 date: 2022-10-08T22:09:46+08:00
 draft: false
 author: "chimission"
@@ -8,9 +8,9 @@ tags: ["leetcode"]
 archives: ['2022', '2022-10']
 comments: false
 description: ""
-url: "/posts/leetcode/"
+url: "/posts/leetcode_array/"
 ---
->做题的一些笔记
+>做题的一些笔记 数组篇
  <!--more-->
 ### [1.两数之和](https://leetcode.cn/problems/valid-parentheses/)
 求数组内两个元素特定和的下标， 刚开始我用两个 for 循环做，n平方时间复杂度。  
@@ -147,7 +147,7 @@ func minSubArrayLen(target int, nums []int) int {
 	return min_length
 }
 ```  
-后来看了题解，用了`滑动窗口`的方法，其实也是双指针的变种，双循环是指定窗口头位置开始，双指针是从窗口尾位置开始，相当于跳过了很多双循环重复的结果，可以将 O(n2) 优化成 O(n)  
+后来看了题解，用了`滑动窗口`的方法，其实也是双指针的变种，双循环是指定窗口头位置开始，双指针是从窗口尾位置开始，相当于跳过了很多双循环重复的结果，根据当前子序列和大小的情况，不断调节子序列的起始位置。从而将O(n^2)的暴力解法降为O(n)
 ```go
 func minSubArrayLen(target int, nums []int) int {
 	min_length := len(nums) + 1

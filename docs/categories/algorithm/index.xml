@@ -9,13 +9,13 @@
     <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
     <lastBuildDate>Sat, 08 Oct 2022 22:09:46 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Leetcode 笔记</title>
-      <link>https://notes.chimission.cn/posts/leetcode/</link>
+      <title>Leetcode 数组篇</title>
+      <link>https://notes.chimission.cn/posts/leetcode_array/</link>
       <pubDate>Sat, 08 Oct 2022 22:09:46 +0800</pubDate>
       
-      <guid>https://notes.chimission.cn/posts/leetcode/</guid>
+      <guid>https://notes.chimission.cn/posts/leetcode_array/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;做题的一些笔记&lt;/p&gt;
+&lt;p&gt;做题的一些笔记 数组篇&lt;/p&gt;
 &lt;/blockquote&gt;</description>
     </item>
     

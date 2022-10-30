@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+
+
+
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Leetcode 链表篇 - Chimission&#39;s Notes</title>
+<meta name="description" content="">
+
+<meta name="author" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=09b8dd6241107efaf92a254022ba8b338497c843">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=09b8dd6241107efaf92a254022ba8b338497c843">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=09b8dd6241107efaf92a254022ba8b338497c843">
+<link rel="alternate" href="/index.xml?c=09b8dd6241107efaf92a254022ba8b338497c843" type="application/rss+xml" title="RSS" />
+<meta property="og:title" content="Leetcode 链表篇 - Chimission&#39;s Notes">
+</meta>
+<meta property="og:url" content="https://notes.chimission.cn/posts/leetcode_link/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Chimission&#39;s Notes">
+<meta property="og:description" content="">
+
+<meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
+
+<meta name="twitter:card" content="summary_large_image" /></meta>
+<meta name="twitter:site" content="@"></meta>
+<meta name="twitter:creator" content="@"></meta>
+<meta name="twitter:title" content="Leetcode 链表篇 - Chimission&#39;s Notes"></meta>
+<meta name="twitter:url" content="https://notes.chimission.cn/posts/leetcode_link/"></meta>
+<meta name="twitter:description" content=""></meta>
+
+<meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
+
+
+<link rel="stylesheet" href="/css/main.css?c=09b8dd6241107efaf92a254022ba8b338497c843">
+<link rel="stylesheet" href="/css/color.css?c=09b8dd6241107efaf92a254022ba8b338497c843">
+
+
+
+
+</head>
+
+<body class="theme-default">
+
+
+<div id="content-header" class="title">
+  
+  <a class="site-title" href="/">Chimission&#39;s Notes</a>
+  
+  <span class="site-sub-title"></span>
+
+  
+
+  <div id="main-menu-nav">
+    <div id="main-menu-nav-items">
+      
+        <div class="nav-item"><a href="/about/">About</a></div>
+      
+        <div class="nav-item"><a href="/tags/">Tags</a></div>
+      
+        <div class="nav-item"><a href="/categories/">Categories</a></div>
+      
+        <div class="nav-item"><a href="/archives/">Archives</a></div>
+      
+    </div>
+  </div>
+</div>
+<div id="content" class="main">
+
+
+
+
+<h2>Leetcode 链表篇</h2>
+
+<span class="sub">2022-10-27</span>
+
+
+
+
+
+
+
+
+<blockquote>
+<p>做题的一些笔记 链表篇</p>
+</blockquote>
+<h3 id="203-移除链表元素httpsleetcodecnproblemsremove-linked-list-elements"><a href="https://leetcode.cn/problems/remove-linked-list-elements/">203. 移除链表元素</a></h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">removeElements</span>(head <span style="color:#555">*</span>ListNode, val <span style="color:#078;font-weight:bold">int</span>) <span style="color:#555">*</span>ListNode {
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">if</span> head <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>   	<span style="color:#069;font-weight:bold">return</span> head
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   t <span style="color:#555">:=</span> head
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">for</span> t.Next <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>   	<span style="color:#069;font-weight:bold">if</span> t.Next.Val <span style="color:#555">==</span> val {
+</span></span><span style="display:flex;"><span>   		t.Next = t.Next.Next
+</span></span><span style="display:flex;"><span>   	} <span style="color:#069;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>   		t = t.Next
+</span></span><span style="display:flex;"><span>   	}
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">if</span> head.Val <span style="color:#555">==</span> val {
+</span></span><span style="display:flex;"><span>   	head = head.Next
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">return</span> head
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>第一版自己写的代码感觉不太优雅， 特殊处理的代码块有两个， 第一个判断是不是空链表，第二个是循环完了,回过头来判断头节点是不是符合条件。看看能不能优化成一个for循环就可以，去掉这两个if判断。<br>
+看了题解，通常做法是在进入循环前在链表最前面加了个新的头结点，这样就不用循环完回过头来判断头结点的条件。<br>
+另外有人给出了递归的版本，这个我开始往递归上想，借鉴一下。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">removeElements</span>(head <span style="color:#555">*</span>ListNode, val <span style="color:#078;font-weight:bold">int</span>) <span style="color:#555">*</span>ListNode {
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">if</span> head <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>   	<span style="color:#069;font-weight:bold">return</span> head
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   t <span style="color:#555">:=</span> head
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">for</span> t.Next <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>   	<span style="color:#069;font-weight:bold">if</span> t.Next.Val <span style="color:#555">==</span> val {
+</span></span><span style="display:flex;"><span>   		t.Next = t.Next.Next
+</span></span><span style="display:flex;"><span>   	} <span style="color:#069;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>   		t = t.Next
+</span></span><span style="display:flex;"><span>   	}
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">if</span> head.Val <span style="color:#555">==</span> val {
+</span></span><span style="display:flex;"><span>   	head = head.Next
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">return</span> head
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+
+
+
+
+
+<hr class="block-separater">
+
+
+
+
+
+
+
+
+
+
+<div class="content-footer-item neighbor">
+	
+	<div class="prev-post">Prev: <a href="/posts/leetcode_array/">Leetcode 数组篇</a></div>
+	
+	
+</div>
+
+
+
+
+
+
+    
+    
+    
+
+
+
+
+
+
+    
+    
+    
+
+
+
+
+<script src="/js/single.js"></script>
+
+
+	</div><div id="content-footer" class="sub">
+  Copyright © 2022, Chimission; all rights reserved.
+  <div class="credit">
+    Power by <a href="https://gohugo.io">Hugo</a> /
+    Theme <a href="https://github.com/michimani/simplog/">simplog</a> by <a href="https://github.com/michimani/">michimani</a>
+  </div>
+</div></body>
+
+</html>

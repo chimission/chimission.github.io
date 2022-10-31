@@ -14,10 +14,10 @@
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=5762e3a03c91dd829ae82fc9c1050e1152d14152">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=5762e3a03c91dd829ae82fc9c1050e1152d14152">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=5762e3a03c91dd829ae82fc9c1050e1152d14152">
-<link rel="alternate" href="/index.xml?c=5762e3a03c91dd829ae82fc9c1050e1152d14152" type="application/rss+xml" title="RSS" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=7a5e1c265fabce45e17fc025566ecdb7d8b19579">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=7a5e1c265fabce45e17fc025566ecdb7d8b19579">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=7a5e1c265fabce45e17fc025566ecdb7d8b19579">
+<link rel="alternate" href="/index.xml?c=7a5e1c265fabce45e17fc025566ecdb7d8b19579" type="application/rss+xml" title="RSS" />
 <meta property="og:title" content="Leetcode 链表篇 - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/leetcode_link/">
@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=5762e3a03c91dd829ae82fc9c1050e1152d14152">
-<link rel="stylesheet" href="/css/color.css?c=5762e3a03c91dd829ae82fc9c1050e1152d14152">
+<link rel="stylesheet" href="/css/main.css?c=7a5e1c265fabce45e17fc025566ecdb7d8b19579">
+<link rel="stylesheet" href="/css/color.css?c=7a5e1c265fabce45e17fc025566ecdb7d8b19579">
 
 
 
@@ -219,6 +219,31 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * obj.AddAtIndex(index,val);
 </span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * obj.DeleteAtIndex(index);
 </span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> */</span>
+</span></span></code></pre></div><h3 id="206-反转链表httpsleetcodecnproblemsreverse-linked-list"><a href="https://leetcode.cn/problems/reverse-linked-list/">206. 反转链表</a></h3>
+<p>这道题给我打击很大，一上来思路很清晰，但是代码就是写不出来， 看了下自己的提交记录18年就通过了一次，19年也通过了一次，如今再来做一遍居然做不出来了。。
+也没啥好说的，不涉及到思维技巧，就是考察写代码能力。还需要多多练习啊。。。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#09f;font-style:italic">//迭代法
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">reverseList</span>(head <span style="color:#555">*</span>ListNode) <span style="color:#555">*</span>ListNode {
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">var</span> p <span style="color:#555">*</span>ListNode
+</span></span><span style="display:flex;"><span>    c <span style="color:#555">:=</span> head
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">for</span> c<span style="color:#555">!=</span><span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>        t<span style="color:#555">:=</span>c.Next
+</span></span><span style="display:flex;"><span>        c.Next=p
+</span></span><span style="display:flex;"><span>        p=c
+</span></span><span style="display:flex;"><span>        c=t
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">return</span> p
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">// 递归法
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">reverseList</span>(head <span style="color:#555">*</span>ListNode) <span style="color:#555">*</span>ListNode {
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">if</span> head<span style="color:#555">!=</span><span style="color:#069;font-weight:bold">nil</span> <span style="color:#555">&amp;&amp;</span> head.Next<span style="color:#555">!=</span><span style="color:#069;font-weight:bold">nil</span>{
+</span></span><span style="display:flex;"><span>		p<span style="color:#555">:=</span><span style="color:#c0f">reverseList</span>(head.Next)
+</span></span><span style="display:flex;"><span>		head.Next.Next=head
+</span></span><span style="display:flex;"><span>		head.Next=<span style="color:#069;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">return</span> p
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">return</span> head
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div>
 
 

@@ -84,7 +84,7 @@ func (this *MyLinkedList) Get(index int) int {
 		t = t.Next
 
 	}
-	  -1
+	return -1
 
 }
 
@@ -148,4 +148,32 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
  * obj.AddAtIndex(index,val);
  * obj.DeleteAtIndex(index);
  */
+```
+
+### [206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/)
+这道题给我打击很大，一上来思路很清晰，但是代码就是写不出来， 看了下自己的提交记录18年就通过了一次，19年也通过了一次，如今再来做一遍居然做不出来了。。
+也没啥好说的，不涉及到思维技巧，就是考察写代码能力。还需要多多练习啊。。。
+```go
+//迭代法
+func reverseList(head *ListNode) *ListNode {
+    var p *ListNode
+    c := head
+    for c!=nil {
+        t:=c.Next
+        c.Next=p
+        p=c
+        c=t
+    }
+    return p
+}
+// 递归法
+func reverseList(head *ListNode) *ListNode {
+    if head!=nil && head.Next!=nil{
+		p:=reverseList(head.Next)
+		head.Next.Next=head
+		head.Next=nil
+		return p
+	}
+	return head
+}
 ```

@@ -84,7 +84,7 @@ func (this *MyLinkedList) Get(index int) int {
 		t = t.Next
 
 	}
-	return -1
+	  -1
 
 }
 

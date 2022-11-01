@@ -176,4 +176,56 @@ func reverseList(head *ListNode) *ListNode {
 	}
 	return head
 }
+```  
+
+### [24. 两两交换链表中的节点](https://leetcode.cn/problems/swap-nodes-in-pairs/)  
+这道题有3种不懂思路的方法，记录一下
+```go
+// 迭代
+func swapPairs(head *ListNode) *ListNode {
+    d := &ListNode{0, head}
+    cur := d
+    for cur.Next!=nil && cur.Next.Next!=nil{
+        s := cur.Next
+        t := cur.Next.Next.Next
+
+        cur.Next = cur.Next.Next
+        cur.Next.Next = s
+        cur.Next.Next.Next = t
+        cur = cur.Next.Next
+    }
+    return d.Next
+}
+//递归
+func swapPairs(head *ListNode) *ListNode {
+    if head == nil || head.Next == nil {
+		return head
+	}
+    nextItem := head.Next
+	head.Next = swapPairs(nextItem.next)
+	nextItem.Next = head
+	return nextItem
+}
+// 栈
+func swapPairs(head *ListNode) *ListNode {
+    var linkList [2]*ListNode
+
+    d := &ListNode{0, head}
+	cur := head
+    head =d
+    for cur != nil && cur.Next != nil {
+        linkList[0] = cur
+		linkList[1] = cur.Next
+        cur = cur.Next.Next
+        d.Next = linkList[1]
+        d.Next.Next = linkList[0]
+        d = d.Next.Next
+    }
+    if cur != nil {
+		d.Next = cur
+	} else {
+		d.Next = nil
+	}
+    return head.Next
+}
 ```

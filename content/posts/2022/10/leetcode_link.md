@@ -229,3 +229,58 @@ func swapPairs(head *ListNode) *ListNode {
     return head.Next
 }
 ```
+
+### [19.删除链表的倒数第N个节点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+题目是中等难度的题， 单纯的模拟操作并没有什么难度，先计算长度，再转换删除节点的位置，最后转化为删除第n个节点。用了两次循环，但也是O(n)。  
+还有进阶版只一次循环，双指针法， 分别设置fast和slow两个指针，先让fast先走n步，然后fast和slow一起走，当fast走到底时，slow的下一个节点就是要删除的节点。
+```go
+//循环迭代
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+    // 先求链表长度
+    length := 0
+    for cur := head; cur!= nil;cur=cur.Next {
+        length++
+    }
+    
+    // 定位被删除的节点是第几个节点
+    index := length - n
+    // 头节点删除
+    if index == 0 {
+        return head.Next
+    }
+    //删除节点
+    t := head
+	currentIndex := 0
+	for t.Next != nil {
+		if currentIndex == index-1 {
+			t.Next = t.Next.Next
+			return head
+		}
+		currentIndex += 1
+		t = t.Next
+	}
+    return head
+}
+// 双指针
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+    
+    slow , fast := head, head
+    
+    for fast.Next != nil {
+        if n > 0 {
+        fast = fast.Next
+        n--
+        } else{
+            fast = fast.Next
+            slow = slow.Next
+        }
+    }
+    if n>0 { // 说明是头节点需要删除
+        return head.Next
+    } else {
+    slow.Next = slow.Next.Next
+    }
+    return head
+}
+//
+```

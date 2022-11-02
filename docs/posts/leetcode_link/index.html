@@ -14,10 +14,10 @@
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=401c568eb79866c2fc9a31cc936811ffd6f740f0">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=401c568eb79866c2fc9a31cc936811ffd6f740f0">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=401c568eb79866c2fc9a31cc936811ffd6f740f0">
-<link rel="alternate" href="/index.xml?c=401c568eb79866c2fc9a31cc936811ffd6f740f0" type="application/rss+xml" title="RSS" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=291821217f0c74630d5b2a998123f902d74a5a4e">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=291821217f0c74630d5b2a998123f902d74a5a4e">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=291821217f0c74630d5b2a998123f902d74a5a4e">
+<link rel="alternate" href="/index.xml?c=291821217f0c74630d5b2a998123f902d74a5a4e" type="application/rss+xml" title="RSS" />
 <meta property="og:title" content="Leetcode 链表篇 - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/leetcode_link/">
@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=401c568eb79866c2fc9a31cc936811ffd6f740f0">
-<link rel="stylesheet" href="/css/color.css?c=401c568eb79866c2fc9a31cc936811ffd6f740f0">
+<link rel="stylesheet" href="/css/main.css?c=291821217f0c74630d5b2a998123f902d74a5a4e">
+<link rel="stylesheet" href="/css/color.css?c=291821217f0c74630d5b2a998123f902d74a5a4e">
 
 
 
@@ -293,7 +293,59 @@
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">return</span> head.Next
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>
+</span></span></code></pre></div><h3 id="19删除链表的倒数第n个节点httpsleetcodecnproblemsremove-nth-node-from-end-of-list"><a href="https://leetcode.cn/problems/remove-nth-node-from-end-of-list/">19.删除链表的倒数第N个节点</a></h3>
+<p>题目是中等难度的题， 单纯的模拟操作并没有什么难度，先计算长度，再转换删除节点的位置，最后转化为删除第n个节点。用了两次循环，但也是O(n)。<br>
+还有进阶版只一次循环，双指针法， 分别设置fast和slow两个指针，先让fast先走n步，然后fast和slow一起走，当fast走到底时，slow的下一个节点就是要删除的节点。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#09f;font-style:italic">//循环迭代
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">removeNthFromEnd</span>(head <span style="color:#555">*</span>ListNode, n <span style="color:#078;font-weight:bold">int</span>) <span style="color:#555">*</span>ListNode {
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">// 先求链表长度
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>    length <span style="color:#555">:=</span> <span style="color:#f60">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">for</span> cur <span style="color:#555">:=</span> head; cur<span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span>;cur=cur.Next {
+</span></span><span style="display:flex;"><span>        length<span style="color:#555">++</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">// 定位被删除的节点是第几个节点
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>    index <span style="color:#555">:=</span> length <span style="color:#555">-</span> n
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">// 头节点删除
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">if</span> index <span style="color:#555">==</span> <span style="color:#f60">0</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#069;font-weight:bold">return</span> head.Next
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">//删除节点
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>    t <span style="color:#555">:=</span> head
+</span></span><span style="display:flex;"><span>	currentIndex <span style="color:#555">:=</span> <span style="color:#f60">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">for</span> t.Next <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">if</span> currentIndex <span style="color:#555">==</span> index<span style="color:#555">-</span><span style="color:#f60">1</span> {
+</span></span><span style="display:flex;"><span>			t.Next = t.Next.Next
+</span></span><span style="display:flex;"><span>			<span style="color:#069;font-weight:bold">return</span> head
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		currentIndex <span style="color:#555">+=</span> <span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>		t = t.Next
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">return</span> head
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">// 双指针
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">removeNthFromEnd</span>(head <span style="color:#555">*</span>ListNode, n <span style="color:#078;font-weight:bold">int</span>) <span style="color:#555">*</span>ListNode {
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    slow , fast <span style="color:#555">:=</span> head, head
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">for</span> fast.Next <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#069;font-weight:bold">if</span> n &gt; <span style="color:#f60">0</span> {
+</span></span><span style="display:flex;"><span>        fast = fast.Next
+</span></span><span style="display:flex;"><span>        n<span style="color:#555">--</span>
+</span></span><span style="display:flex;"><span>        } <span style="color:#069;font-weight:bold">else</span>{
+</span></span><span style="display:flex;"><span>            fast = fast.Next
+</span></span><span style="display:flex;"><span>            slow = slow.Next
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">if</span> n&gt;<span style="color:#f60">0</span> { <span style="color:#09f;font-style:italic">// 说明是头节点需要删除
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">return</span> head.Next
+</span></span><span style="display:flex;"><span>    } <span style="color:#069;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>    slow.Next = slow.Next.Next
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">return</span> head
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">//
+</span></span></span></code></pre></div>
 
 
 

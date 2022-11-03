@@ -1,10 +1,10 @@
 ---
-title: "Leetcode 链表篇"
+title: "Leetcode 链表篇 [一]"
 date: 2022-10-27T22:10:57+08:00
 draft: false
 author: "chimission"
-categories: [""]
-tags: [""]
+categories: ["algorithm"]
+tags: ["leetcode"]
 archives: ['2022', '2022-10']
 comments: false
 description: ""

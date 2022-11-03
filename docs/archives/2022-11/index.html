@@ -9,7 +9,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>2022 - Chimission&#39;s Notes</title>
+<title>2022-11 - Chimission&#39;s Notes</title>
 <meta name="description" content="">
 
 <meta name="author" content="">
@@ -18,9 +18,9 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
 <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
 <link rel="alternate" href="/index.xml?c=bd409787e88018e2985ed0992b3f7b71e3c279a7" type="application/rss+xml" title="RSS" />
-<meta property="og:title" content="2022 - Chimission&#39;s Notes">
+<meta property="og:title" content="2022-11 - Chimission&#39;s Notes">
 </meta>
-<meta property="og:url" content="https://notes.chimission.cn/archives/2022/">
+<meta property="og:url" content="https://notes.chimission.cn/archives/2022-11/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Chimission&#39;s Notes">
 <meta property="og:description" content="">
@@ -30,8 +30,8 @@
 <meta name="twitter:card" content="summary_large_image" /></meta>
 <meta name="twitter:site" content="@"></meta>
 <meta name="twitter:creator" content="@"></meta>
-<meta name="twitter:title" content="2022 - Chimission&#39;s Notes"></meta>
-<meta name="twitter:url" content="https://notes.chimission.cn/archives/2022/"></meta>
+<meta name="twitter:title" content="2022-11 - Chimission&#39;s Notes"></meta>
+<meta name="twitter:url" content="https://notes.chimission.cn/archives/2022-11/"></meta>
 <meta name="twitter:description" content=""></meta>
 
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
@@ -79,7 +79,7 @@
 
 
 
-<h2>2022</h2>
+<h2>2022-11</h2>
 
 <ul class="post-list">
 	
@@ -91,90 +91,6 @@
     做题的一些笔记 链表篇
 链表相交 由于前面几题的训练，这里自然而然的想到了快慢指针法。
 func getIntersectionNode(headA, headB *ListNode) *ListNode { if headA == nil || headB == nil { return nil } //得到A的长度 al := getLinkLenght(headA) //得到B的长度 bl := getLinkLenght(headB) // 将长的链表提前移动到相同长度的位置 if al&gt;bl{ for al&gt;bl { headA = headA.Next al-=1 } } if bl&gt;al { for bl&gt;al { headB = headB.Next bl-=1 } } //找到相等的节点 for headA != headB{ headA = headA.Next headB = headB.Next } return headA } func getLinkLenght(head *ListNode) int { l := 0 for head.
-  </div>
-  
-</li>
-	
-	<li class="post-item">
-  <div class="post-date sub">2022-10-27</div>
-  <div class="post-title"><a href="/posts/leetcode_link/">Leetcode 链表篇 [一]</a></div>
-  
-  <div class="post-summary">
-    <blockquote>
-<p>做题的一些笔记 链表篇</p>
-</blockquote>
-  </div>
-  
-</li>
-	
-	<li class="post-item">
-  <div class="post-date sub">2022-10-08</div>
-  <div class="post-title"><a href="/posts/leetcode_array/">Leetcode 数组篇</a></div>
-  
-  <div class="post-summary">
-    <blockquote>
-<p>做题的一些笔记 数组篇</p>
-</blockquote>
-  </div>
-  
-</li>
-	
-	<li class="post-item">
-  <div class="post-date sub">2022-09-18</div>
-  <div class="post-title"><a href="/posts/k8s_custom_controller_2/">如何在k8s中使用自定义资源（2）原理</a></div>
-  
-  <div class="post-summary">
-    <blockquote>
-<p>文本是系列文章第二篇，讲述如何在k8s中使用自定义资源</p>
-</blockquote>
-  </div>
-  
-</li>
-	
-	<li class="post-item">
-  <div class="post-date sub">2022-08-04</div>
-  <div class="post-title"><a href="/posts/k8s_custom_controller_1/">如何在k8s中使用自定义资源（1）概念</a></div>
-  
-  <div class="post-summary">
-    <blockquote>
-<p>文本是系列文章第一篇，讲述如何在k8s中使用自定义资源</p>
-</blockquote>
-  </div>
-  
-</li>
-	
-	<li class="post-item">
-  <div class="post-date sub">2022-07-25</div>
-  <div class="post-title"><a href="/posts/cloud_native_monitor/">通过钉钉机器人自动化报警运维</a></div>
-  
-  <div class="post-summary">
-    <blockquote>
-<p>prometheus+alertmanager+dingtalk 实现运维监控报警</p>
-</blockquote>
-  </div>
-  
-</li>
-	
-	<li class="post-item">
-  <div class="post-date sub">2022-07-17</div>
-  <div class="post-title"><a href="/posts/tcp_handshake/">TCP为什么需要三次握手</a></div>
-  
-  <div class="post-summary">
-    <blockquote>
-<p>你真的知道tcp为什么需要握手3次吗</p>
-</blockquote>
-  </div>
-  
-</li>
-	
-	<li class="post-item">
-  <div class="post-date sub">2022-07-04</div>
-  <div class="post-title"><a href="/posts/k8s_create_pod/">聊一聊 输入 kubectl apply 时，k8s在背后做了什么</a></div>
-  
-  <div class="post-summary">
-    <blockquote>
-<p>介绍了一下k8s是如何通过命令行启动pod :-)  这是一篇旧文，迁移到此</p>
-</blockquote>
   </div>
   
 </li>

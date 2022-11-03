@@ -14,10 +14,10 @@
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=291821217f0c74630d5b2a998123f902d74a5a4e">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=291821217f0c74630d5b2a998123f902d74a5a4e">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=291821217f0c74630d5b2a998123f902d74a5a4e">
-<link rel="alternate" href="/index.xml?c=291821217f0c74630d5b2a998123f902d74a5a4e" type="application/rss+xml" title="RSS" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
+<link rel="alternate" href="/index.xml?c=bd409787e88018e2985ed0992b3f7b71e3c279a7" type="application/rss+xml" title="RSS" />
 <meta property="og:title" content="algorithm - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/categories/algorithm/">
@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=291821217f0c74630d5b2a998123f902d74a5a4e">
-<link rel="stylesheet" href="/css/color.css?c=291821217f0c74630d5b2a998123f902d74a5a4e">
+<link rel="stylesheet" href="/css/main.css?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
+<link rel="stylesheet" href="/css/color.css?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
 
 
 
@@ -82,6 +82,30 @@
 <h2>algorithm</h2>
 
 <ul class="post-list">
+	
+	<li class="post-item">
+  <div class="post-date sub">2022-11-03</div>
+  <div class="post-title"><a href="/posts/leetcode_link_2/">Leetcode 链表篇 [二]</a></div>
+  
+  <div class="post-summary">
+    做题的一些笔记 链表篇
+链表相交 由于前面几题的训练，这里自然而然的想到了快慢指针法。
+func getIntersectionNode(headA, headB *ListNode) *ListNode { if headA == nil || headB == nil { return nil } //得到A的长度 al := getLinkLenght(headA) //得到B的长度 bl := getLinkLenght(headB) // 将长的链表提前移动到相同长度的位置 if al&gt;bl{ for al&gt;bl { headA = headA.Next al-=1 } } if bl&gt;al { for bl&gt;al { headB = headB.Next bl-=1 } } //找到相等的节点 for headA != headB{ headA = headA.Next headB = headB.Next } return headA } func getLinkLenght(head *ListNode) int { l := 0 for head.
+  </div>
+  
+</li>
+	
+	<li class="post-item">
+  <div class="post-date sub">2022-10-27</div>
+  <div class="post-title"><a href="/posts/leetcode_link/">Leetcode 链表篇 [一]</a></div>
+  
+  <div class="post-summary">
+    <blockquote>
+<p>做题的一些笔记 链表篇</p>
+</blockquote>
+  </div>
+  
+</li>
 	
 	<li class="post-item">
   <div class="post-date sub">2022-10-08</div>

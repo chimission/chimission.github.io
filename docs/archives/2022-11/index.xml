@@ -14,9 +14,9 @@
       <pubDate>Thu, 03 Nov 2022 22:26:27 +0800</pubDate>
       
       <guid>https://notes.chimission.cn/posts/leetcode_link_2/</guid>
-      <description>做题的一些笔记 链表篇
-链表相交 由于前面几题的训练，这里自然而然的想到了快慢指针法。
-func getIntersectionNode(headA, headB *ListNode) *ListNode { if headA == nil || headB == nil { return nil } //得到A的长度 al := getLinkLenght(headA) //得到B的长度 bl := getLinkLenght(headB) // 将长的链表提前移动到相同长度的位置 if al&amp;gt;bl{ for al&amp;gt;bl { headA = headA.Next al-=1 } } if bl&amp;gt;al { for bl&amp;gt;al { headB = headB.Next bl-=1 } } //找到相等的节点 for headA != headB{ headA = headA.Next headB = headB.Next } return headA } func getLinkLenght(head *ListNode) int { l := 0 for head.</description>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;做题的一些笔记 链表篇&lt;/p&gt;
+&lt;/blockquote&gt;</description>
     </item>
     
   </channel>

@@ -14,10 +14,10 @@
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
-<link rel="alternate" href="/index.xml?c=bd409787e88018e2985ed0992b3f7b71e3c279a7" type="application/rss+xml" title="RSS" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=8873acc269833f13d5718cf96bb658232f43a99c">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=8873acc269833f13d5718cf96bb658232f43a99c">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=8873acc269833f13d5718cf96bb658232f43a99c">
+<link rel="alternate" href="/index.xml?c=8873acc269833f13d5718cf96bb658232f43a99c" type="application/rss+xml" title="RSS" />
 <meta property="og:title" content="Leetcode 链表篇 [二] - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/leetcode_link_2/">
@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
-<link rel="stylesheet" href="/css/color.css?c=bd409787e88018e2985ed0992b3f7b71e3c279a7">
+<link rel="stylesheet" href="/css/main.css?c=8873acc269833f13d5718cf96bb658232f43a99c">
+<link rel="stylesheet" href="/css/color.css?c=8873acc269833f13d5718cf96bb658232f43a99c">
 
 
 
@@ -127,6 +127,26 @@
 </span></span><span style="display:flex;"><span>        head = head.Next
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">return</span> l
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="142-环形链表-iihttpsleetcodecnproblemslinked-list-cycle-iidescription"><a href="https://leetcode.cn/problems/linked-list-cycle-ii/description/">142. 环形链表 II</a></h3>
+<p>一道题考了两个地方，一个链表相交，一个求相交的节点。第一点比较简单，解决方法还是经典的快慢指针，但是第二点相交节点有困难，它并不是单纯的编程题，需要一点数学证明。我刚开始想到了用字典，但是感觉不太优雅还要引入额外的数据结构，当然如果是业务上遇到这种情况我肯定会用字典，毕竟怎么简单怎么来，但是做题嘛，还是想下最优解怎么写，最后搜了下 <a href="https://programmercarl.com/0142.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8II.html#_142-%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8ii">题解</a>。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">detectCycle</span>(head <span style="color:#555">*</span>ListNode) <span style="color:#555">*</span>ListNode {
+</span></span><span style="display:flex;"><span>    fast<span style="color:#555">:=</span>head
+</span></span><span style="display:flex;"><span>    slow <span style="color:#555">:=</span> head
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">for</span> fast<span style="color:#555">!=</span><span style="color:#069;font-weight:bold">nil</span> <span style="color:#555">&amp;&amp;</span> fast.Next<span style="color:#555">!=</span><span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>        fast = fast.Next.Next
+</span></span><span style="display:flex;"><span>        slow = slow.Next
+</span></span><span style="display:flex;"><span>        <span style="color:#069;font-weight:bold">if</span> fast <span style="color:#555">==</span> slow {
+</span></span><span style="display:flex;"><span>            index1<span style="color:#555">:=</span>head
+</span></span><span style="display:flex;"><span>            index2<span style="color:#555">:=</span>slow
+</span></span><span style="display:flex;"><span>            <span style="color:#069;font-weight:bold">for</span> index1 <span style="color:#555">!=</span> index2{
+</span></span><span style="display:flex;"><span>                index1 = index1.Next
+</span></span><span style="display:flex;"><span>                index2 = index2.Next
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#069;font-weight:bold">return</span> index1
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div>
 

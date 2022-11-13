@@ -14,10 +14,10 @@
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=a8c276c4092526fe938be8ade0423f456a659984">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=a8c276c4092526fe938be8ade0423f456a659984">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=a8c276c4092526fe938be8ade0423f456a659984">
-<link rel="alternate" href="/index.xml?c=a8c276c4092526fe938be8ade0423f456a659984" type="application/rss+xml" title="RSS" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=1ad6d06216dec4026795a3663c912023246b043d">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=1ad6d06216dec4026795a3663c912023246b043d">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=1ad6d06216dec4026795a3663c912023246b043d">
+<link rel="alternate" href="/index.xml?c=1ad6d06216dec4026795a3663c912023246b043d" type="application/rss+xml" title="RSS" />
 <meta property="og:title" content="Leetcode 链表篇 [一] - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/leetcode_link/">
@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=a8c276c4092526fe938be8ade0423f456a659984">
-<link rel="stylesheet" href="/css/color.css?c=a8c276c4092526fe938be8ade0423f456a659984">
+<link rel="stylesheet" href="/css/main.css?c=1ad6d06216dec4026795a3663c912023246b043d">
+<link rel="stylesheet" href="/css/color.css?c=1ad6d06216dec4026795a3663c912023246b043d">
 
 
 
@@ -344,8 +344,66 @@
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">return</span> head
 </span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">//
-</span></span></span></code></pre></div>
+</span></span></code></pre></div><h3 id="链表相交httpsleetcodecnproblemsintersection-of-two-linked-lists-lccidescription"><a href="https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/description/">链表相交</a></h3>
+<p>由于前面几题的训练，这里自然而然的想到了快慢指针法。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">getIntersectionNode</span>(headA, headB <span style="color:#555">*</span>ListNode) <span style="color:#555">*</span>ListNode {
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">if</span> headA <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> <span style="color:#555">||</span> headB <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">//得到A的长度
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>    al <span style="color:#555">:=</span> <span style="color:#c0f">getLinkLenght</span>(headA)
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">//得到B的长度
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>    bl <span style="color:#555">:=</span> <span style="color:#c0f">getLinkLenght</span>(headB)
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">// 将长的链表提前移动到相同长度的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">if</span> al&gt;bl{
+</span></span><span style="display:flex;"><span>        <span style="color:#069;font-weight:bold">for</span> al&gt;bl {
+</span></span><span style="display:flex;"><span>            headA = headA.Next
+</span></span><span style="display:flex;"><span>            al<span style="color:#555">-=</span><span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">if</span> bl&gt;al {
+</span></span><span style="display:flex;"><span>        <span style="color:#069;font-weight:bold">for</span> bl&gt;al {
+</span></span><span style="display:flex;"><span>            headB = headB.Next
+</span></span><span style="display:flex;"><span>            bl<span style="color:#555">-=</span><span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">//找到相等的节点
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">for</span> headA <span style="color:#555">!=</span> headB{
+</span></span><span style="display:flex;"><span>            headA = headA.Next
+</span></span><span style="display:flex;"><span>            headB = headB.Next
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">return</span> headA
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">getLinkLenght</span>(head <span style="color:#555">*</span>ListNode) <span style="color:#078;font-weight:bold">int</span> {
+</span></span><span style="display:flex;"><span>    l <span style="color:#555">:=</span> <span style="color:#f60">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">for</span> head.Next <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>        l<span style="color:#555">++</span>
+</span></span><span style="display:flex;"><span>        head = head.Next
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">return</span> l
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="142-环形链表-iihttpsleetcodecnproblemslinked-list-cycle-iidescription"><a href="https://leetcode.cn/problems/linked-list-cycle-ii/description/">142. 环形链表 II</a></h3>
+<p>一道题考了两个地方，一个链表相交，一个求相交的节点。第一点比较简单，解决方法还是经典的快慢指针，但是第二点相交节点有困难，它并不是单纯的编程题，需要一点数学证明。我刚开始想到了用字典，但是感觉不太优雅还要引入额外的数据结构，当然如果是业务上遇到这种情况我肯定会用字典，毕竟怎么简单怎么来，但是做题嘛，还是想下最优解怎么写，最后搜了下 <a href="https://programmercarl.com/0142.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8II.html#_142-%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8ii">题解</a>。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">detectCycle</span>(head <span style="color:#555">*</span>ListNode) <span style="color:#555">*</span>ListNode {
+</span></span><span style="display:flex;"><span>    fast<span style="color:#555">:=</span>head
+</span></span><span style="display:flex;"><span>    slow <span style="color:#555">:=</span> head
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">for</span> fast<span style="color:#555">!=</span><span style="color:#069;font-weight:bold">nil</span> <span style="color:#555">&amp;&amp;</span> fast.Next<span style="color:#555">!=</span><span style="color:#069;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>        fast = fast.Next.Next
+</span></span><span style="display:flex;"><span>        slow = slow.Next
+</span></span><span style="display:flex;"><span>        <span style="color:#069;font-weight:bold">if</span> fast <span style="color:#555">==</span> slow {
+</span></span><span style="display:flex;"><span>            index1<span style="color:#555">:=</span>head
+</span></span><span style="display:flex;"><span>            index2<span style="color:#555">:=</span>slow
+</span></span><span style="display:flex;"><span>            <span style="color:#069;font-weight:bold">for</span> index1 <span style="color:#555">!=</span> index2{
+</span></span><span style="display:flex;"><span>                index1 = index1.Next
+</span></span><span style="display:flex;"><span>                index2 = index2.Next
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#069;font-weight:bold">return</span> index1
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
 
 
 
@@ -374,7 +432,7 @@
 	<div class="prev-post">Prev: <a href="/posts/leetcode_array/">Leetcode 数组篇</a></div>
 	
 	
-	<div class="next-post">Next: <a href="/posts/leetcode_link_2/">Leetcode 链表篇 [二]</a></div>
+	<div class="next-post">Next: <a href="/posts/leetcode_hash_1/">Leetcode 哈希篇</a></div>
 	
 </div>
 
@@ -403,8 +461,8 @@
 </li>
           
             <li class="post-item">
-  <div class="post-date sub">2022-11-03</div>
-  <div class="post-title"><a href="/posts/leetcode_link_2/">Leetcode 链表篇 [二]</a></div>
+  <div class="post-date sub">2022-10-27</div>
+  <div class="post-title"><a href="/posts/leetcode_link/">Leetcode 链表篇 [一]</a></div>
   
 </li>
           
@@ -442,8 +500,8 @@
 </li>
           
           <li class="post-item">
-  <div class="post-date sub">2022-11-03</div>
-  <div class="post-title"><a href="/posts/leetcode_link_2/">Leetcode 链表篇 [二]</a></div>
+  <div class="post-date sub">2022-10-27</div>
+  <div class="post-title"><a href="/posts/leetcode_link/">Leetcode 链表篇 [一]</a></div>
   
 </li>
           

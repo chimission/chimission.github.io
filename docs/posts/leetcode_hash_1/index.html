@@ -14,10 +14,10 @@
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=1ad6d06216dec4026795a3663c912023246b043d">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=1ad6d06216dec4026795a3663c912023246b043d">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=1ad6d06216dec4026795a3663c912023246b043d">
-<link rel="alternate" href="/index.xml?c=1ad6d06216dec4026795a3663c912023246b043d" type="application/rss+xml" title="RSS" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=772b969b56198d0666db916a453e8623a6c96ae0">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=772b969b56198d0666db916a453e8623a6c96ae0">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=772b969b56198d0666db916a453e8623a6c96ae0">
+<link rel="alternate" href="/index.xml?c=772b969b56198d0666db916a453e8623a6c96ae0" type="application/rss+xml" title="RSS" />
 <meta property="og:title" content="Leetcode 哈希篇 - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/leetcode_hash_1/">
@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=1ad6d06216dec4026795a3663c912023246b043d">
-<link rel="stylesheet" href="/css/color.css?c=1ad6d06216dec4026795a3663c912023246b043d">
+<link rel="stylesheet" href="/css/main.css?c=772b969b56198d0666db916a453e8623a6c96ae0">
+<link rel="stylesheet" href="/css/color.css?c=772b969b56198d0666db916a453e8623a6c96ae0">
 
 
 
@@ -106,6 +106,55 @@
 </span></span><span style="display:flex;"><span>   }
 </span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">return</span> result
 </span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="541-反转字符串-iihttpsleetcodecnproblemsreverse-string-ii"><a href="https://leetcode.cn/problems/reverse-string-ii/">541. 反转字符串 II</a></h3>
+<p>第一遍单纯的模拟操作，导致代码写的很冗余，设计了很多计数器</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">reverseStr</span>(s <span style="color:#078;font-weight:bold">string</span>, k <span style="color:#078;font-weight:bold">int</span>) <span style="color:#078;font-weight:bold">string</span> {
+</span></span><span style="display:flex;"><span>   l <span style="color:#555">:=</span> <span style="color:#366">len</span>(s)
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">if</span> l <span style="color:#555">&lt;=</span><span style="color:#f60">1</span> <span style="color:#555">||</span> k<span style="color:#555">==</span><span style="color:#f60">0</span>{
+</span></span><span style="display:flex;"><span>       <span style="color:#069;font-weight:bold">return</span> s
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   sByte <span style="color:#555">:=</span> []<span style="color:#366">byte</span>(s) 
+</span></span><span style="display:flex;"><span>   flag <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">true</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">for</span> i<span style="color:#555">:=</span><span style="color:#f60">0</span>; i&lt;l;i<span style="color:#555">++</span>{
+</span></span><span style="display:flex;"><span>       <span style="color:#069;font-weight:bold">if</span> i <span style="color:#555">%</span> k<span style="color:#555">==</span><span style="color:#f60">0</span> {
+</span></span><span style="display:flex;"><span>           flag = <span style="color:#069;font-weight:bold">true</span>
+</span></span><span style="display:flex;"><span>       }
+</span></span><span style="display:flex;"><span>       <span style="color:#069;font-weight:bold">if</span> flag {
+</span></span><span style="display:flex;"><span>           start<span style="color:#555">:=</span>i
+</span></span><span style="display:flex;"><span>           end<span style="color:#555">:=</span>i<span style="color:#555">+</span>k<span style="color:#555">-</span><span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>           <span style="color:#069;font-weight:bold">if</span> end &gt; l<span style="color:#555">-</span><span style="color:#f60">1</span> {
+</span></span><span style="display:flex;"><span>               end = l<span style="color:#555">-</span><span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>           }
+</span></span><span style="display:flex;"><span>           <span style="color:#069;font-weight:bold">for</span> start &lt; end {
+</span></span><span style="display:flex;"><span>               sByte[start] , sByte[end] = sByte[end], sByte[start]
+</span></span><span style="display:flex;"><span>               start <span style="color:#555">+=</span> <span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>               end <span style="color:#555">-=</span> <span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>       }
+</span></span><span style="display:flex;"><span>       i=i<span style="color:#555">+</span>k
+</span></span><span style="display:flex;"><span>       flag = <span style="color:#069;font-weight:bold">false</span>  
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">return</span> <span style="color:#366">string</span>(sByte)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>第二次看题解， 发现在循环的时候每次可以多循环几个元素，不用只加一</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">reverseStr</span>(s <span style="color:#078;font-weight:bold">string</span>, k <span style="color:#078;font-weight:bold">int</span>) <span style="color:#078;font-weight:bold">string</span> {
+</span></span><span style="display:flex;"><span>   sByte <span style="color:#555">:=</span> []<span style="color:#366">byte</span>(s)
+</span></span><span style="display:flex;"><span>   l <span style="color:#555">:=</span> <span style="color:#366">len</span>(s)
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span><span style="color:#f60">0</span>; i&lt;l;i<span style="color:#555">+=</span> <span style="color:#f60">2</span> <span style="color:#555">*</span> k{
+</span></span><span style="display:flex;"><span>       start <span style="color:#555">:=</span> i
+</span></span><span style="display:flex;"><span>       end <span style="color:#555">:=</span> i<span style="color:#555">+</span>k<span style="color:#555">-</span><span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#069;font-weight:bold">if</span> end&gt;l<span style="color:#555">-</span><span style="color:#f60">1</span>{
+</span></span><span style="display:flex;"><span>           end=l<span style="color:#555">-</span><span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>       }
+</span></span><span style="display:flex;"><span>       <span style="color:#069;font-weight:bold">for</span> start &lt; end {
+</span></span><span style="display:flex;"><span>           sByte[start], sByte[end] = sByte[end], sByte[start]
+</span></span><span style="display:flex;"><span>           start<span style="color:#555">+=</span><span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>           end<span style="color:#555">-=</span><span style="color:#f60">1</span>
+</span></span><span style="display:flex;"><span>       }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">return</span> <span style="color:#366">string</span>(sByte)
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div>
 
 
@@ -132,10 +181,8 @@
 
 <div class="content-footer-item neighbor">
 	
-	<div class="prev-post">Prev: <a href="/posts/leetcode_link/">Leetcode 链表篇 [一]</a></div>
+	<div class="prev-post">Prev: <a href="/posts/leetcode_link/">Leetcode 链表篇</a></div>
 	
-	
-	<div class="next-post">Next: <a href="/posts/leetcode_string_1/">Leetcode 字符串篇</a></div>
 	
 </div>
 
@@ -152,12 +199,6 @@
         <ul class="post-list">
           
             <li class="post-item">
-  <div class="post-date sub">2022-11-13</div>
-  <div class="post-title"><a href="/posts/leetcode_string_1/">Leetcode 字符串篇</a></div>
-  
-</li>
-          
-            <li class="post-item">
   <div class="post-date sub">2022-11-03</div>
   <div class="post-title"><a href="/posts/leetcode_hash_1/">Leetcode 哈希篇</a></div>
   
@@ -165,14 +206,20 @@
           
             <li class="post-item">
   <div class="post-date sub">2022-10-27</div>
-  <div class="post-title"><a href="/posts/leetcode_link/">Leetcode 链表篇 [一]</a></div>
+  <div class="post-title"><a href="/posts/leetcode_link/">Leetcode 链表篇</a></div>
+  
+</li>
+          
+            <li class="post-item">
+  <div class="post-date sub">2022-10-08</div>
+  <div class="post-title"><a href="/posts/leetcode_array/">Leetcode 数组篇</a></div>
   
 </li>
           
         </ul>
         <div class="more-area">
           
-          <a class="more" href='/categories/algorithm/'>more ...</a>
+          <a class="more" href="/categories/">other categories</a>
           
       </div>
         </div>
@@ -191,12 +238,6 @@
         <ul class="post-list">
           
           <li class="post-item">
-  <div class="post-date sub">2022-11-13</div>
-  <div class="post-title"><a href="/posts/leetcode_string_1/">Leetcode 字符串篇</a></div>
-  
-</li>
-          
-          <li class="post-item">
   <div class="post-date sub">2022-11-03</div>
   <div class="post-title"><a href="/posts/leetcode_hash_1/">Leetcode 哈希篇</a></div>
   
@@ -204,14 +245,20 @@
           
           <li class="post-item">
   <div class="post-date sub">2022-10-27</div>
-  <div class="post-title"><a href="/posts/leetcode_link/">Leetcode 链表篇 [一]</a></div>
+  <div class="post-title"><a href="/posts/leetcode_link/">Leetcode 链表篇</a></div>
+  
+</li>
+          
+          <li class="post-item">
+  <div class="post-date sub">2022-10-08</div>
+  <div class="post-title"><a href="/posts/leetcode_array/">Leetcode 数组篇</a></div>
   
 </li>
           
         </ul>
         <div class="more-area">
           
-          <a class="more" href='/tags/leetcode/'>more ...</a>
+          <a class="more" href="/tags/">other tags</a>
           
       </div>
         </div>

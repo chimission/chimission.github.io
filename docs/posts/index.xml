@@ -7,18 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
-    <lastBuildDate>Sun, 13 Nov 2022 22:19:49 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Leetcode 字符串篇</title>
-      <link>https://notes.chimission.cn/posts/leetcode_string_1/</link>
-      <pubDate>Sun, 13 Nov 2022 22:19:49 +0800</pubDate>
-      
-      <guid>https://notes.chimission.cn/posts/leetcode_string_1/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;做题的一些笔记 字符串篇&lt;/p&gt;
-&lt;/blockquote&gt;</description>
-    </item>
-    
+    <lastBuildDate>Thu, 03 Nov 2022 22:26:27 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Leetcode 哈希篇</title>
       <link>https://notes.chimission.cn/posts/leetcode_hash_1/</link>
@@ -31,7 +20,7 @@
     </item>
     
     <item>
-      <title>Leetcode 链表篇 [一]</title>
+      <title>Leetcode 链表篇</title>
       <link>https://notes.chimission.cn/posts/leetcode_link/</link>
       <pubDate>Thu, 27 Oct 2022 22:10:57 +0800</pubDate>
       

@@ -2,6 +2,33 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://notes.chimission.cn/archives/2023/</loc>
+    <lastmod>2023-01-03T21:48:21+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/archives/2023-01/</loc>
+    <lastmod>2023-01-03T21:48:21+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/archives/</loc>
+    <lastmod>2023-01-03T21:48:21+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/</loc>
+    <lastmod>2023-01-03T21:48:21+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/posts/</loc>
+    <lastmod>2023-01-03T21:48:21+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/tags/python/</loc>
+    <lastmod>2023-01-03T21:48:21+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/posts/python_object/</loc>
+    <lastmod>2023-01-03T21:48:21+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/tags/</loc>
+    <lastmod>2023-01-03T21:48:21+08:00</lastmod>
+  </url><url>
+    <loc>https://notes.chimission.cn/tags/%E6%BA%90%E7%A0%81/</loc>
+    <lastmod>2023-01-03T21:48:21+08:00</lastmod>
+  </url><url>
     <loc>https://notes.chimission.cn/archives/2022/</loc>
     <lastmod>2022-11-03T22:26:27+08:00</lastmod>
   </url><url>
@@ -11,25 +38,13 @@
     <loc>https://notes.chimission.cn/categories/algorithm/</loc>
     <lastmod>2022-11-03T22:26:27+08:00</lastmod>
   </url><url>
-    <loc>https://notes.chimission.cn/archives/</loc>
-    <lastmod>2022-11-03T22:26:27+08:00</lastmod>
-  </url><url>
     <loc>https://notes.chimission.cn/categories/</loc>
-    <lastmod>2022-11-03T22:26:27+08:00</lastmod>
-  </url><url>
-    <loc>https://notes.chimission.cn/</loc>
     <lastmod>2022-11-03T22:26:27+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/tags/leetcode/</loc>
     <lastmod>2022-11-03T22:26:27+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/posts/leetcode_hash_1/</loc>
-    <lastmod>2022-11-03T22:26:27+08:00</lastmod>
-  </url><url>
-    <loc>https://notes.chimission.cn/posts/</loc>
-    <lastmod>2022-11-03T22:26:27+08:00</lastmod>
-  </url><url>
-    <loc>https://notes.chimission.cn/tags/</loc>
     <lastmod>2022-11-03T22:26:27+08:00</lastmod>
   </url><url>
     <loc>https://notes.chimission.cn/archives/2022-10/</loc>

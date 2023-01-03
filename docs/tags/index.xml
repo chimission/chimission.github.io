@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright © 2022, Chimission; all rights reserved.</copyright>
-    <lastBuildDate>Thu, 03 Nov 2022 22:26:27 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 03 Jan 2023 21:48:21 +0800</lastBuildDate><atom:link href="https://notes.chimission.cn/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>python</title>
+      <link>https://notes.chimission.cn/tags/python/</link>
+      <pubDate>Tue, 03 Jan 2023 21:48:21 +0800</pubDate>
+      
+      <guid>https://notes.chimission.cn/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>源码</title>
+      <link>https://notes.chimission.cn/tags/%E6%BA%90%E7%A0%81/</link>
+      <pubDate>Tue, 03 Jan 2023 21:48:21 +0800</pubDate>
+      
+      <guid>https://notes.chimission.cn/tags/%E6%BA%90%E7%A0%81/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>leetcode</title>
       <link>https://notes.chimission.cn/tags/leetcode/</link>

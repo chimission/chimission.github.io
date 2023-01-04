@@ -10,7 +10,7 @@ comments: false
 description: ""
 url: "/posts/python_object/"
 ---
-> 天天写python,新年开始咱也试着学习下python源码
+> 天天写python,新年开始咱也试着学习下python源码,python version 3.7
  <!--more-->
 ### 1.Everything in Python is an object
 在 python 中，一切都是「对象」。但是这句话代表什么含义？ 英文原文「Everything in Python is an object」。「对象」对应英文中的「object」，在面向对象的语言中，「object」和「class」（类）是成对出现的，通常来讲「class」是数据的抽象模型，「object」是「class」的实体表现，但在 python 中对象的含义并非如此简单。我认为 一切都是「对象」有3层表达含义：
@@ -135,10 +135,63 @@ print_type(Test)
 #<class 'int'>
 #<class 'type'>
 ```  
-可以看到 无论是内建类型 int ，自定义类型 Test 还是函数test，都可以赋值给变量a，然后通过参数传递给函数执行。由此我们可以想到 python 在内部一定是统一了「对象」的表示，以此来实现「一切皆对象」的表现形式，可以使用统一的API来管理python的对象。  
+可以看到 无论是内建类型 int ，自定义类型 Test 还是函数test，都可以赋值给变量a，然后通过参数传递给函数执行。由此我们可以想到 python 在内部一定是统一了「对象」的表示，以此来实现「一切皆对象」，使用统一的API来管理python的对象。  
 
-### PyObject，对象的统一表示
-未完待续，本章后续会继续探索pyton源码，找出python里「一切皆对象」是如何实现的。
+### PyObject，对象的统一表示  
+在python内部，对象使用 `PyObject` 结构体来同意表示，在此结构体基础上添加额外的字段组成新的结构体来表示特定类型的对象，例如`PyFloatObject`代表float对象，`PyListObject`代表list对象。`PyObject` 定义在 `Include/object.h` 文件里。  
+```c
+/* Define pointers to support a doubly-linked list of all live heap objects. */
+#define _PyObject_HEAD_EXTRA            \
+    struct _object *_ob_next;           \
+    struct _object *_ob_prev;
+
+/* Nothing is actually declared to be a PyObject, but every pointer to
+ * a Python object can be cast to a PyObject*.  This is inheritance built
+ * by hand.  Similarly every pointer to a variable-size Python object can,
+ * in addition, be cast to PyVarObject*.
+ */
+typedef struct _object {
+    _PyObject_HEAD_EXTRA
+    Py_ssize_t ob_refcnt;
+    struct _typeobject *ob_type;
+} PyObject;
+```  
+
+`_PyObject_HEAD_EXTRA` 是一个c语言宏，编译器会将其展开，实际上展开后`PyObject`有4个字段：ob_refcnt代表引用计数，ob_type代表类型指针，*_ob_next和*_ob_prev是一个双向链表用于跟踪所有 活跃堆对象，一般看源码用不到，这里我也没有深入学习。可以看到注释里说明了实际上在python里并没有任何对象是 `PyObject` 类型，但是任意一个对象都可以通过类型转换为 `PyObject*` 类型，从而实现统一。注释里还提到了可变长对象 `PyVarObject*`，其实 `PyObject`只能用来表示定长对象例如float，毕竟它没有字段表示 size 大小的信息。在面对list，dict等变长对象时就需要拓展，于是 `PyVarObject` 在 `PyObject` 的基础上增加了 `ob_size` 字段，用于表示当前对象的长度。   
+>ps:有趣的是 int 对象在python中使用的 `PyVarObject`表示的，后面我们会继续讨论为什么，原因和python中的int可以表示非常大的数字有关系，一般其他语言都会限定int的表示范围例如int64，而python不会。
+
+```c
+typedef struct {
+    PyObject ob_base;
+    Py_ssize_t ob_size; /* Number of items in variable part */
+} PyVarObject;
+```
+![对比](https://images.chimission.cn/blog/pyobject.png)  
+特定对象的实现，视其大小是否固定，需要包含头部 `PyObject` 或 `PyVarObject`。因此，头文件准备了两个宏定义，方便其他对象使用：
+```c
+#define PyObject_HEAD          PyObject ob_base;
+#define PyObject_VAR_HEAD      PyVarObject ob_base;
+``` 
+例如对于 `float` 对象， 它的定义包含了`PyObject`，增加了一个 double 类型字段 `ob_fval` 用来存值
+```c
+typedef struct {
+    PyObject_HEAD
+    double ob_fval;
+} PyFloatObject;
+``` 
+而对于 list 对象 ，他的定义则包含了 `PyVarObject` . 
+```c
+typedef struct {
+    PyObject_VAR_HEAD
+    PyObject **ob_item;
+    Py_ssize_t allocated;
+} PyListObject;
+```
+`PyListObject` 增加了2个字段， 分别是：
+>ob_item ，指向 动态数组 的指针，数组保存元素对象指针；  
+>allocated ，动态数组总长度，即列表当前的 容量 ；  
+
+![对比](https://images.chimission.cn/blog/python_list_float.png)
 
 
 ### 参考

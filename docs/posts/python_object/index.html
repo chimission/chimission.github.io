@@ -14,10 +14,10 @@
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=650c9b832a9ac9cb916a1980f7aa3cd07f1e9ab4">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=650c9b832a9ac9cb916a1980f7aa3cd07f1e9ab4">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=650c9b832a9ac9cb916a1980f7aa3cd07f1e9ab4">
-<link rel="alternate" href="/index.xml?c=650c9b832a9ac9cb916a1980f7aa3cd07f1e9ab4" type="application/rss+xml" title="RSS" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=f92984c0715a2e814734c84028419379703fa0fc">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=f92984c0715a2e814734c84028419379703fa0fc">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=f92984c0715a2e814734c84028419379703fa0fc">
+<link rel="alternate" href="/index.xml?c=f92984c0715a2e814734c84028419379703fa0fc" type="application/rss+xml" title="RSS" />
 <meta property="og:title" content="Python源码学习1 对象的秘密 - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/python_object/">
@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=650c9b832a9ac9cb916a1980f7aa3cd07f1e9ab4">
-<link rel="stylesheet" href="/css/color.css?c=650c9b832a9ac9cb916a1980f7aa3cd07f1e9ab4">
+<link rel="stylesheet" href="/css/main.css?c=f92984c0715a2e814734c84028419379703fa0fc">
+<link rel="stylesheet" href="/css/color.css?c=f92984c0715a2e814734c84028419379703fa0fc">
 
 
 
@@ -87,7 +87,7 @@
 
 
 <blockquote>
-<p>天天写python,新年开始咱也试着学习下python源码</p>
+<p>天天写python,新年开始咱也试着学习下python源码,python version 3.7</p>
 </blockquote>
 <h3 id="1everything-in-python-is-an-object">1.Everything in Python is an object</h3>
 <p>在 python 中，一切都是「对象」。但是这句话代表什么含义？ 英文原文「Everything in Python is an object」。「对象」对应英文中的「object」，在面向对象的语言中，「object」和「class」（类）是成对出现的，通常来讲「class」是数据的抽象模型，「object」是「class」的实体表现，但在 python 中对象的含义并非如此简单。我认为 一切都是「对象」有3层表达含义：</p>
@@ -205,9 +205,53 @@
 </span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">#&lt;class &#39;function&#39;&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">#&lt;class &#39;int&#39;&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">#&lt;class &#39;type&#39;&gt;</span>
-</span></span></code></pre></div><p>可以看到 无论是内建类型 int ，自定义类型 Test 还是函数test，都可以赋值给变量a，然后通过参数传递给函数执行。由此我们可以想到 python 在内部一定是统一了「对象」的表示，以此来实现「一切皆对象」的表现形式，可以使用统一的API来管理python的对象。</p>
+</span></span></code></pre></div><p>可以看到 无论是内建类型 int ，自定义类型 Test 还是函数test，都可以赋值给变量a，然后通过参数传递给函数执行。由此我们可以想到 python 在内部一定是统一了「对象」的表示，以此来实现「一切皆对象」，使用统一的API来管理python的对象。</p>
 <h3 id="pyobject对象的统一表示">PyObject，对象的统一表示</h3>
-<p>未完待续，本章后续会继续探索pyton源码，找出python里「一切皆对象」是如何实现的。</p>
+<p>在python内部，对象使用 <code>PyObject</code> 结构体来同意表示，在此结构体基础上添加额外的字段组成新的结构体来表示特定类型的对象，例如<code>PyFloatObject</code>代表float对象，<code>PyListObject</code>代表list对象。<code>PyObject</code> 定义在 <code>Include/object.h</code> 文件里。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#09f;font-style:italic">/* Define pointers to support a doubly-linked list of all live heap objects. */</span>
+</span></span><span style="display:flex;"><span><span style="color:#099">#define _PyObject_HEAD_EXTRA            \
+</span></span></span><span style="display:flex;"><span><span style="color:#099">    struct _object *_ob_next;           \
+</span></span></span><span style="display:flex;"><span><span style="color:#099">    struct _object *_ob_prev;
+</span></span></span><span style="display:flex;"><span><span style="color:#099"></span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">/* Nothing is actually declared to be a PyObject, but every pointer to
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * a Python object can be cast to a PyObject*.  This is inheritance built
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * by hand.  Similarly every pointer to a variable-size Python object can,
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> * in addition, be cast to PyVarObject*.
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> _object {
+</span></span><span style="display:flex;"><span>    _PyObject_HEAD_EXTRA
+</span></span><span style="display:flex;"><span>    Py_ssize_t ob_refcnt;
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">struct</span> _typeobject <span style="color:#555">*</span>ob_type;
+</span></span><span style="display:flex;"><span>} PyObject;
+</span></span></code></pre></div><p><code>_PyObject_HEAD_EXTRA</code> 是一个c语言宏，编译器会将其展开，实际上展开后<code>PyObject</code>有4个字段：ob_refcnt代表引用计数，ob_type代表类型指针，<em>_ob_next和</em>_ob_prev是一个双向链表用于跟踪所有 活跃堆对象，一般看源码用不到，这里我也没有深入学习。可以看到注释里说明了实际上在python里并没有任何对象是 <code>PyObject</code> 类型，但是任意一个对象都可以通过类型转换为 <code>PyObject*</code> 类型，从而实现统一。注释里还提到了可变长对象 <code>PyVarObject*</code>，其实 <code>PyObject</code>只能用来表示定长对象例如float，毕竟它没有字段表示 size 大小的信息。在面对list，dict等变长对象时就需要拓展，于是 <code>PyVarObject</code> 在 <code>PyObject</code> 的基础上增加了 <code>ob_size</code> 字段，用于表示当前对象的长度。</p>
+<blockquote>
+<p>ps:有趣的是 int 对象在python中使用的 <code>PyVarObject</code>表示的，后面我们会继续讨论为什么，原因和python中的int可以表示非常大的数字有关系，一般其他语言都会限定int的表示范围例如int64，而python不会。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>    PyObject ob_base;
+</span></span><span style="display:flex;"><span>    Py_ssize_t ob_size; <span style="color:#09f;font-style:italic">/* Number of items in variable part */</span>
+</span></span><span style="display:flex;"><span>} PyVarObject;
+</span></span></code></pre></div><p><img src="https://images.chimission.cn/blog/pyobject.png" alt="对比"><br>
+特定对象的实现，视其大小是否固定，需要包含头部 <code>PyObject</code> 或 <code>PyVarObject</code>。因此，头文件准备了两个宏定义，方便其他对象使用：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#099">#define PyObject_HEAD          PyObject ob_base;
+</span></span></span><span style="display:flex;"><span><span style="color:#099">#define PyObject_VAR_HEAD      PyVarObject ob_base;
+</span></span></span></code></pre></div><p>例如对于 <code>float</code> 对象， 它的定义包含了<code>PyObject</code>，增加了一个 double 类型字段 <code>ob_fval</code> 用来存值</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>    PyObject_HEAD
+</span></span><span style="display:flex;"><span>    <span style="color:#078;font-weight:bold">double</span> ob_fval;
+</span></span><span style="display:flex;"><span>} PyFloatObject;
+</span></span></code></pre></div><p>而对于 list 对象 ，他的定义则包含了 <code>PyVarObject</code> .</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>    PyObject_VAR_HEAD
+</span></span><span style="display:flex;"><span>    PyObject <span style="color:#555">**</span>ob_item;
+</span></span><span style="display:flex;"><span>    Py_ssize_t allocated;
+</span></span><span style="display:flex;"><span>} PyListObject;
+</span></span></code></pre></div><p><code>PyListObject</code> 增加了2个字段， 分别是：</p>
+<blockquote>
+<p>ob_item ，指向 动态数组 的指针，数组保存元素对象指针；<br>
+allocated ，动态数组总长度，即列表当前的 容量 ；</p>
+</blockquote>
+<p><img src="https://images.chimission.cn/blog/python_list_float.png" alt="对比"></p>
 <h3 id="参考">参考</h3>
 <p><a href="https://linux.die.net/diveintopython/html/getting_to_know_python/everything_is_an_object.html">1.https://linux.die.net/diveintopython/html/getting_to_know_python/everything_is_an_object.html</a><br>
 <a href="https://stackoverflow.com/questions/865911/is-everything-an-object-in-python-like-ruby">2.https://stackoverflow.com/questions/865911/is-everything-an-object-in-python-like-ruby</a></p>

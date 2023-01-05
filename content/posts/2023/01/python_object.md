@@ -157,7 +157,7 @@ typedef struct _object {
 } PyObject;
 ```  
 
-`_PyObject_HEAD_EXTRA` 是一个c语言宏，编译器会将其展开，实际上展开后`PyObject`有4个字段：ob_refcnt代表引用计数，ob_type代表类型指针，*_ob_next和*_ob_prev是一个双向链表用于跟踪所有 活跃堆对象，一般看源码用不到，这里我也没有深入学习。可以看到注释里说明了实际上在python里并没有任何对象是 `PyObject` 类型，但是任意一个对象都可以通过类型转换为 `PyObject*` 类型，从而实现统一。注释里还提到了可变长对象 `PyVarObject*`，其实 `PyObject`只能用来表示定长对象例如float，毕竟它没有字段表示 size 大小的信息。在面对list，dict等变长对象时就需要拓展，于是 `PyVarObject` 在 `PyObject` 的基础上增加了 `ob_size` 字段，用于表示当前对象的长度。   
+`_PyObject_HEAD_EXTRA` 是一个c语言宏，编译器会将其展开，实际上展开后`PyObject`有4个字段：ob_refcnt代表引用计数，ob_type代表类型指针，*_ob_next和*_ob_prev是一个双向链表用于跟踪所有 活跃堆对象，一般看源码用不到，这里我也没有深入学习。可以看到注释里说明了实际上在python里并没有任何对象是 `PyObject` 类型，但是任意一个对象都可以通过类型转换为 `PyObject*` 类型，从而可以实现使用统一的api管理不同的对象。注释里还提到了可变长对象 `PyVarObject*`，其实 `PyObject`只能用来表示定长对象例如float，毕竟它没有字段表示 size 大小的信息。在面对list，dict等变长对象时就需要拓展，于是 `PyVarObject` 在 `PyObject` 的基础上增加了 `ob_size` 字段，用于表示当前对象的长度。   
 >ps:有趣的是 int 对象在python中使用的 `PyVarObject`表示的，后面我们会继续讨论为什么，原因和python中的int可以表示非常大的数字有关系，一般其他语言都会限定int的表示范围例如int64，而python不会。
 
 ```c
@@ -192,6 +192,64 @@ typedef struct {
 >allocated ，动态数组总长度，即列表当前的 容量 ；  
 
 ![对比](https://images.chimission.cn/blog/python_list_float.png)
+
+### PyTypeObject，类型的统一表示  
+说完了对象，那么对象的类型又是怎么实现的？在python中类型也是对象，那么类型的实现会和 `PyObject` 有关系吗？ 接下来让我继续深入源码探究。我们回过头来看 `PyObject` 里包含了一个字段 `ob_type`， 它是一个 `PyTypeObject` 类型的指针，从命名上不难看出这个字段指向的就是对象的类型，`PyTypeObject` 在 `Include/object.h` 中定义，因为字段太多，我们这里只看最需要关心的部分： 
+```c
+typedef struct _typeobject {
+    PyObject_VAR_HEAD
+    const char *tp_name; /* For printing, in format "<module>.<name>" */
+    // ...
+    /* Attribute descriptor and subclassing stuff */
+    struct _typeobject *tp_base;
+    // ......
+} PyTypeObject;
+```  
+类型对象 `PyTypeObject` 是一个 变长对象 ，包含变长对象头部宏 `PyObject_VAR_HEAD`，所以类型也是拓展自 `PyObject`， 从而实现了「类型也是对象」。`PyTypeObject` 就是 类型对象 在 Python 中的表现形式，对应着面向对象中 `类` 的概念。PyTypeObject 保存着对象的 元信息 ，描述对象的 类型 。其中我们关心的两个拓展字段：
+>tp_name:类型的名字;  
+>tp_base:类型的继承字段指向基类对象;  
+
+但是 `PyTypeObject` 只是一个底层类型， 就像 `PyObject` 需要扩展成为特定的结构体才会被使用，例如float类型 `PyFloat_Type`， 定义在 `Object/floatobject.c`， 它拓展了 `PyTypeObject`： 
+```c
+PyTypeObject PyFloat_Type = {
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    "float",
+    sizeof(PyFloatObject),
+    0,
+    (destructor)float_dealloc,                  /* tp_dealloc */
+    // ...
+    (reprfunc)float_repr,                       /* tp_repr */
+    // ...
+};
+```
+接下来我们以float对象和float类型为例，观察下各种结构体的引用关系，假设我们在python声明一个变量：
+```python
+In [1]: a=1.1
+In [2]: type(a)
+Out[2]: float 
+```  
+![float类型](/img/python_float_type.png) 
+> ps: 我用的七牛云oss上传这张图片居然说我图里有敏感内容...试了几次都不行只能先放在本地了..无奈的是还找不到客服反馈 
+
+变量 `a` 指向的对象是 `PyFloatObject` 结构体，除了公共头部字段 `ob_refcnt` 和 `ob_type` ，专有字段 `ob_fval` 保存了对应的数值。浮点 `类型对象` 是一个 `PyTypeObject` 结构体， 保存了类型名、内存分配信息以及浮点相关操作，实例对象 `ob_type` 字段指向类型对象 `PyFloat_Type`, `a` 变量只是一个指向实际对象的指针。  
+可以看到在 `PyTypeObject` 结构体里也存在着表示类型的字段 `ob_type`，这就意味着类型对象本身也是具有类型的，这句话有点绕，看下实际代码：
+```python
+In [1]: a=1.1
+
+In [2]: type(a)
+Out[2]: float
+
+In [3]: type(float)
+Out[3]: type
+```  
+可以看到， type(float)返回了type类型，也就是说`float`类型对象也有自己的类型`type`， 在源码中也是如此，`PyFloat_Type`的 `ob_type` 字段指向的就是 `PyType_Type` 对象。  
+```c
+PyVarObject_HEAD_INIT(&PyType_Type, 0)  
+```  
+
+### PyType_Type，类型的类型 
+未完待续
+
 
 
 ### 参考

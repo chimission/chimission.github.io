@@ -14,10 +14,10 @@
 
 <meta name="author" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=f92984c0715a2e814734c84028419379703fa0fc">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=f92984c0715a2e814734c84028419379703fa0fc">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=f92984c0715a2e814734c84028419379703fa0fc">
-<link rel="alternate" href="/index.xml?c=f92984c0715a2e814734c84028419379703fa0fc" type="application/rss+xml" title="RSS" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?c=315925c8aaf362e5797f6e26e089d76825fa71a1">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?c=315925c8aaf362e5797f6e26e089d76825fa71a1">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?c=315925c8aaf362e5797f6e26e089d76825fa71a1">
+<link rel="alternate" href="/index.xml?c=315925c8aaf362e5797f6e26e089d76825fa71a1" type="application/rss+xml" title="RSS" />
 <meta property="og:title" content="Python源码学习1 对象的秘密 - Chimission&#39;s Notes">
 </meta>
 <meta property="og:url" content="https://notes.chimission.cn/posts/python_object/">
@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://notes.chimission.cn//images/featured_image.jpg">
 
 
-<link rel="stylesheet" href="/css/main.css?c=f92984c0715a2e814734c84028419379703fa0fc">
-<link rel="stylesheet" href="/css/color.css?c=f92984c0715a2e814734c84028419379703fa0fc">
+<link rel="stylesheet" href="/css/main.css?c=315925c8aaf362e5797f6e26e089d76825fa71a1">
+<link rel="stylesheet" href="/css/color.css?c=315925c8aaf362e5797f6e26e089d76825fa71a1">
 
 
 
@@ -223,7 +223,7 @@
 </span></span><span style="display:flex;"><span>    Py_ssize_t ob_refcnt;
 </span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">struct</span> _typeobject <span style="color:#555">*</span>ob_type;
 </span></span><span style="display:flex;"><span>} PyObject;
-</span></span></code></pre></div><p><code>_PyObject_HEAD_EXTRA</code> 是一个c语言宏，编译器会将其展开，实际上展开后<code>PyObject</code>有4个字段：ob_refcnt代表引用计数，ob_type代表类型指针，<em>_ob_next和</em>_ob_prev是一个双向链表用于跟踪所有 活跃堆对象，一般看源码用不到，这里我也没有深入学习。可以看到注释里说明了实际上在python里并没有任何对象是 <code>PyObject</code> 类型，但是任意一个对象都可以通过类型转换为 <code>PyObject*</code> 类型，从而实现统一。注释里还提到了可变长对象 <code>PyVarObject*</code>，其实 <code>PyObject</code>只能用来表示定长对象例如float，毕竟它没有字段表示 size 大小的信息。在面对list，dict等变长对象时就需要拓展，于是 <code>PyVarObject</code> 在 <code>PyObject</code> 的基础上增加了 <code>ob_size</code> 字段，用于表示当前对象的长度。</p>
+</span></span></code></pre></div><p><code>_PyObject_HEAD_EXTRA</code> 是一个c语言宏，编译器会将其展开，实际上展开后<code>PyObject</code>有4个字段：ob_refcnt代表引用计数，ob_type代表类型指针，<em>_ob_next和</em>_ob_prev是一个双向链表用于跟踪所有 活跃堆对象，一般看源码用不到，这里我也没有深入学习。可以看到注释里说明了实际上在python里并没有任何对象是 <code>PyObject</code> 类型，但是任意一个对象都可以通过类型转换为 <code>PyObject*</code> 类型，从而可以实现使用统一的api管理不同的对象。注释里还提到了可变长对象 <code>PyVarObject*</code>，其实 <code>PyObject</code>只能用来表示定长对象例如float，毕竟它没有字段表示 size 大小的信息。在面对list，dict等变长对象时就需要拓展，于是 <code>PyVarObject</code> 在 <code>PyObject</code> 的基础上增加了 <code>ob_size</code> 字段，用于表示当前对象的长度。</p>
 <blockquote>
 <p>ps:有趣的是 int 对象在python中使用的 <code>PyVarObject</code>表示的，后面我们会继续讨论为什么，原因和python中的int可以表示非常大的数字有关系，一般其他语言都会限定int的表示范围例如int64，而python不会。</p>
 </blockquote>
@@ -252,6 +252,53 @@
 allocated ，动态数组总长度，即列表当前的 容量 ；</p>
 </blockquote>
 <p><img src="https://images.chimission.cn/blog/python_list_float.png" alt="对比"></p>
+<h3 id="pytypeobject类型的统一表示">PyTypeObject，类型的统一表示</h3>
+<p>说完了对象，那么对象的类型又是怎么实现的？在python中类型也是对象，那么类型的实现会和 <code>PyObject</code> 有关系吗？ 接下来让我继续深入源码探究。我们回过头来看 <code>PyObject</code> 里包含了一个字段 <code>ob_type</code>， 它是一个 <code>PyTypeObject</code> 类型的指针，从命名上不难看出这个字段指向的就是对象的类型，<code>PyTypeObject</code> 在 <code>Include/object.h</code> 中定义，因为字段太多，我们这里只看最需要关心的部分：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> _typeobject {
+</span></span><span style="display:flex;"><span>    PyObject_VAR_HEAD
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">const</span> <span style="color:#078;font-weight:bold">char</span> <span style="color:#555">*</span>tp_name; <span style="color:#09f;font-style:italic">/* For printing, in format &#34;&lt;module&gt;.&lt;name&gt;&#34; */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>    <span style="color:#09f;font-style:italic">/* Attribute descriptor and subclassing stuff */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">struct</span> _typeobject <span style="color:#555">*</span>tp_base;
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">// ......
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>} PyTypeObject;
+</span></span></code></pre></div><p>类型对象 <code>PyTypeObject</code> 是一个 变长对象 ，包含变长对象头部宏 <code>PyObject_VAR_HEAD</code>，所以类型也是拓展自 <code>PyObject</code>， 从而实现了「类型也是对象」。<code>PyTypeObject</code> 就是 类型对象 在 Python 中的表现形式，对应着面向对象中 <code>类</code> 的概念。PyTypeObject 保存着对象的 元信息 ，描述对象的 类型 。其中我们关心的两个拓展字段：</p>
+<blockquote>
+<p>tp_name:类型的名字;<br>
+tp_base:类型的继承字段指向基类对象;</p>
+</blockquote>
+<p>但是 <code>PyTypeObject</code> 只是一个底层类型， 就像 <code>PyObject</code> 需要扩展成为特定的结构体才会被使用，例如float类型 <code>PyFloat_Type</code>， 定义在 <code>Object/floatobject.c</code>， 它拓展了 <code>PyTypeObject</code>：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>PyTypeObject PyFloat_Type <span style="color:#555">=</span> {
+</span></span><span style="display:flex;"><span>    PyVarObject_HEAD_INIT(<span style="color:#555">&amp;</span>PyType_Type, <span style="color:#f60">0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#c30">&#34;float&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">sizeof</span>(PyFloatObject),
+</span></span><span style="display:flex;"><span>    <span style="color:#f60">0</span>,
+</span></span><span style="display:flex;"><span>    (destructor)float_dealloc,                  <span style="color:#09f;font-style:italic">/* tp_dealloc */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>    (reprfunc)float_repr,                       <span style="color:#09f;font-style:italic">/* tp_repr */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>};
+</span></span></code></pre></div><p>接下来我们以float对象和float类型为例，观察下各种结构体的引用关系，假设我们在python声明一个变量：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>In [<span style="color:#f60">1</span>]: a<span style="color:#555">=</span><span style="color:#f60">1.1</span>
+</span></span><span style="display:flex;"><span>In [<span style="color:#f60">2</span>]: <span style="color:#366">type</span>(a)
+</span></span><span style="display:flex;"><span>Out[<span style="color:#f60">2</span>]: <span style="color:#366">float</span> 
+</span></span></code></pre></div><p><img src="/img/python_float_type.png" alt="float类型"></p>
+<blockquote>
+<p>ps: 我用的七牛云oss上传这张图片居然说我图里有敏感内容&hellip;试了几次都不行只能先放在本地了..无奈的是还找不到客服反馈</p>
+</blockquote>
+<p>变量 <code>a</code> 指向的对象是 <code>PyFloatObject</code> 结构体，除了公共头部字段 <code>ob_refcnt</code> 和 <code>ob_type</code> ，专有字段 <code>ob_fval</code> 保存了对应的数值。浮点 <code>类型对象</code> 是一个 <code>PyTypeObject</code> 结构体， 保存了类型名、内存分配信息以及浮点相关操作，实例对象 <code>ob_type</code> 字段指向类型对象 <code>PyFloat_Type</code>, <code>a</code> 变量只是一个指向实际对象的指针。<br>
+可以看到在 <code>PyTypeObject</code> 结构体里也存在着表示类型的字段 <code>ob_type</code>，这就意味着类型对象本身也是具有类型的，这句话有点绕，看下实际代码：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>In [<span style="color:#f60">1</span>]: a<span style="color:#555">=</span><span style="color:#f60">1.1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>In [<span style="color:#f60">2</span>]: <span style="color:#366">type</span>(a)
+</span></span><span style="display:flex;"><span>Out[<span style="color:#f60">2</span>]: <span style="color:#366">float</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>In [<span style="color:#f60">3</span>]: <span style="color:#366">type</span>(<span style="color:#366">float</span>)
+</span></span><span style="display:flex;"><span>Out[<span style="color:#f60">3</span>]: <span style="color:#366">type</span>
+</span></span></code></pre></div><p>可以看到， type(float)返回了type类型，也就是说<code>float</code>类型对象也有自己的类型<code>type</code>， 在源码中也是如此，<code>PyFloat_Type</code>的 <code>ob_type</code> 字段指向的就是 <code>PyType_Type</code> 对象。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>PyVarObject_HEAD_INIT(<span style="color:#555">&amp;</span>PyType_Type, <span style="color:#f60">0</span>)  
+</span></span></code></pre></div><h3 id="pytype_type类型的类型">PyType_Type，类型的类型</h3>
+<p>未完待续</p>
 <h3 id="参考">参考</h3>
 <p><a href="https://linux.die.net/diveintopython/html/getting_to_know_python/everything_is_an_object.html">1.https://linux.die.net/diveintopython/html/getting_to_know_python/everything_is_an_object.html</a><br>
 <a href="https://stackoverflow.com/questions/865911/is-everything-an-object-in-python-like-ruby">2.https://stackoverflow.com/questions/865911/is-everything-an-object-in-python-like-ruby</a></p>

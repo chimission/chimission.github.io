@@ -1,5 +1,5 @@
 ---
-title: "Python源码学习1 对象的秘密"
+title: "Python 对象的秘密"
 date: 2023-01-03T21:48:21+08:00
 draft: false
 author: "chimission"
@@ -241,16 +241,34 @@ Out[2]: float
 
 In [3]: type(float)
 Out[3]: type
+
+In [3]: type(type)
+Out[3]: type
 ```  
 可以看到， type(float)返回了type类型，也就是说`float`类型对象也有自己的类型`type`， 在源码中也是如此，`PyFloat_Type`的 `ob_type` 字段指向的就是 `PyType_Type` 对象。  
 ```c
 PyVarObject_HEAD_INIT(&PyType_Type, 0)  
-```  
+```
 
 ### PyType_Type，类型的类型 
-未完待续
+在Python中，类型也是一种对象。  
+```c
+PyTypeObject PyType_Type = {
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    "type",                                     /* tp_name */
+    sizeof(PyHeapTypeObject),                   /* tp_basicsize */
+    sizeof(PyMemberDef),                        /* tp_itemsize */
+    (destructor)type_dealloc,                   /* tp_dealloc */
 
+    // ...
+    (reprfunc)type_repr,                        /* tp_repr */
 
+    // ...
+};
+```
+内建类型和自定义类对应的 PyTypeObject 对象都是这个通过 PyType_Type 创建的。 PyType_Type 在 Python 的类型机制中是一个至关重要的对象，它是所有类型的类型，称为 元类型 ( meta class )。
+
+注意到， PyType_Type 将自己的 ob_type 字段设置成它自己(第 2 行)，这跟我们在 Python 中看到的行为是对应的`tpye(type)=type`
 
 ### 参考
 [1.https://linux.die.net/diveintopython/html/getting_to_know_python/everything_is_an_object.html](https://linux.die.net/diveintopython/html/getting_to_know_python/everything_is_an_object.html)  
